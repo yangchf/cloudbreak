@@ -78,10 +78,6 @@
         
             <li><a href="#quickstart-and-installation">Quickstart and installation</a></li>
         
-            <li><a href="#running-cloudbreak-api-using-docker">Running Cloudbreak API using Docker</a></li>
-        
-            <li><a href="#running-cloudbreak-api-on-the-host">Running Cloudbreak API on the host</a></li>
-        
             <li><a href="#configuration">Configuration</a></li>
         
             <li><a href="#how-it-works">How it works?</a></li>
@@ -108,7 +104,7 @@
 <h1 id="cloudbreak">Cloudbreak</h1>
 <p><em>Cloudbreak is a powerful left surf that breaks over a coral reef, a mile off southwest the island of Tavarua, Fiji.</em></p>
 <p><em>Cloudbreak is a cloud agnostic Hadoop as a Service API. Abstracts the provisioning and ease management and monitoring of on-demand clusters.</em></p>
-<p>http://docs.cloudbreak.apiary.io/</p>
+<p>Cloudbreak <a href="http://docs.cloudbreak.apiary.io/">API documentation</a>.</p>
 <!--main.md-->
 
 <!--overview.md-->
@@ -135,13 +131,13 @@ Once provisioned, new nodes will take up the load and increase the cluster throu
 <!--quickstart.md-->
 
 <h2 id="quickstart-and-installation">Quickstart and installation</h2>
-<h2 id="running-cloudbreak-api-using-docker">Running Cloudbreak API using Docker</h2>
-<h3 id="database">Database</h3>
+<h3 id="running-cloudbreak-api-using-docker">Running Cloudbreak API using Docker</h3>
+<h4 id="database">Database</h4>
 <p>The only dependency that Cloudbreak needs is a postgresql database. The easiest way to spin up a postgresql is of course Docker. Run it first with this line:</p>
 <pre class="prettyprint well"><code>docker run -d --name=&quot;postgresql&quot; -p 5432:5432 -v /tmp/data:/data -e USER=&quot;seqadmin&quot; -e DB=&quot;cloudbreak&quot; -e PASS=&quot;seq123_&quot; paintedfox/postgresql
 </code></pre>
 
-<h3 id="cloudbreak-rest-api">Cloudbreak REST API</h3>
+<h4 id="cloudbreak-rest-api">Cloudbreak REST API</h4>
 <p>After postgresql is running, Cloudbreak can be started locally in a Docker container with the following command. By linking the database container, the necessary environment variables for the connection are set. The postgresql address can be set explicitly through the environment variable: DB_PORT_5432_TCP_ADDR.</p>
 <pre class="prettyprint well"><code>VERSION=0.1-20140623140412
 
@@ -163,18 +159,37 @@ dockerfile/java bash \
 </code></pre>
 
 <p>Note: The system properties prefixed with MAIL_SENDER_ are the SNMP settings required to send emails.  </p>
-<h2 id="running-cloudbreak-api-on-the-host">Running Cloudbreak API on the host</h2>
-<p>If you'd like to run Cloudbreak outside of a Docker container - directly on the host - we provide you an installation shell script.</p>
+<h3 id="running-cloudbreak-api-on-the-host">Running Cloudbreak API on the host</h3>
+<p>If you'd like to run Cloudbreak outside of a Docker container - directly on the host - we provide you shell script that starts the app for you.</p>
 <p>After building the application <em>(./gradlew clean build)</em> please run the following script from the project root:</p>
-<pre class="prettyprint well"><code>./run_cloudbreak.sh &lt;db-user&gt; &lt;db-pass&gt; &lt;db-host&gt; &lt;db-port&gt; &lt;host-address&gt;
+<pre class="prettyprint well"><code>./run_cloudbreak.sh &lt;host-addr&gt; \
+&lt;db-user&gt; \
+&lt;db-pass&gt; \
+&lt;db-host&gt; \
+&lt;db-port&gt; \
+&lt;hbm2ddl-strategy&gt; \
+&lt;smtp-username&gt; \
+&lt;smpt-password \
+&lt;smtp-host&gt; \
+&lt;smtp-port \
+&lt;mail-sender-from&gt;
+
 </code></pre>
 
-<p>The arguments are as follows:</p>
-<p><code>db-user</code> - your database user</p>
-<p><code>db-pass</code> - your password for the database</p>
-<p><code>db-host</code> - the address of the machine hosting your database</p>
-<p><code>db-port</code> - the port where you can connect to the database</p>
-<p><code>host-address</code> - the ngrok generated address to receive SNS notifications</p>
+<p>Where:</p>
+<p><code>host-address</code>     - the ngrok generated address to receive SNS notifications</p>
+<p><code>db-user</code>          - database user name</p>
+<p><code>db-pass</code>          - password for the database</p>
+<p><code>db-host</code>          - the address of the machine hosting the database</p>
+<p><code>db-port</code>          - the port where you can connect to the database</p>
+<p><code>hbm2ddl-strategy</code> - the desired value for the <em>hibernate.hbm2ddl.auto</em> configuration</p>
+<p><code>smtp-username</code>    - SMTP username</p>
+<p><code>smpt-password</code>    - SMTP password</p>
+<p><code>smtp-host</code>        - SMTP host address</p>
+<p><code>smtp-port</code>        - SMTP port</p>
+<p><code>mail-sender-from</code> - the email address to use when sending registration confirmation or password renewal emails</p>
+<p>Please note, that configuration properties can be given both as arguments to the script and as system properties.</p>
+<p><em>Warning</em>: When providing configuration as arguments to the script, the arguments should follow the order above!  </p>
 <h2 id="configuration">Configuration</h2>
 <h3 id="development">Development</h3>
 <p>In order to be able to receive Amazon push notifications on localhost, you will need to install a secure introspectable tunnel to localhost.</p>
@@ -186,7 +201,31 @@ ngrok 8080
 
 <p><em>Note: In the terminal window you'll find displayed a value - this is the last argument <code>host-address</code> of the <code>run_cloudbreak.sh</code> script</em></p>
 <h3 id="production">Production</h3>
-<p>TBD - add properties list !!!</p>
+<p>In production environments make sure the following system properties are set:</p>
+<pre class="prettyprint well"><code># The host running the cloudbreak app
+HOST_ADDR
+
+# SMTP related properties (required for account registration, password renewal)
+MAIL_SENDER_USERNAME
+MAIL_SENDER_PASSWORD
+MAIL_SENDER_HOST
+MAIL_SENDER_PORT
+MAIL_SENDER_FROM
+
+# Database related properties
+DB_ENV_USER
+DB_ENV_PASS
+DB_PORT_5432_TCP_ADDR
+DB_PORT_5432_TCP_PORT
+HBM2DDL_STRATEGY
+</code></pre>
+
+<p>If you'd like to work with AWS you'll need to set two more system properties:</p>
+<pre class="prettyprint well"><code># AWS credentials
+AWS_ACCESS_KEY_ID
+AWS_SECRET_KEY
+</code></pre>
+
 <!--quickstart.md-->
 
 <!--howitworks.md-->
@@ -433,7 +472,12 @@ Additionally when you are creating Templates you can specify a <code>password</c
 <li>On Azure go to Settings and <code>Management Certificates</code> and upload the <code>cert</code> file</li>
 </ol>
 <p>You are done - from now on Cloudbreak can launch Azure instances on your behalf.</p>
-<p><em>Note: Clodbreak does not store any login details into these instances - when you are creating Templates you can specify a <code>password</code> or <code>SSH Public key</code> which you can used to login into the launched instances.</em></p>
+<p><em>Note1: Clodbreak does not store any login details into these instances - when you are creating Templates you can specify a <code>password</code> or <code>SSH Public key</code> which you can used to login into the launched instances.</em></p>
+<p><em>Note2: Because Azure does not directly support third party public images we will have to copy the used image from VM Depot into your storage account. The steps below needs to be finished ONCE and only ONCE before any stack is created for every affinity group:</em></p>
+<p><em>1. Get the VM image - http://vmdepot.msopentech.com/Vhd/Show?vhdId=42480&amp;version=43564</em>
+<em>2. Copy the VHD blob from above (community images) into your storage account</em>
+<em>3. Create a VM image from the copied VHD blob.</em></p>
+<p><em>This process will take 20 minutes so be patient - but this step will have do be done once and only once.</em></p>
 <!--accounts.md-->
 
 <!--ui.md-->
