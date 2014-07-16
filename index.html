@@ -131,12 +131,7 @@ Once provisioned, new nodes will take up the load and increase the cluster throu
 <!--quickstart.md-->
 
 <h2 id="quickstart-and-installation">QuickStart and installation</h2>
-<p>We provide you three different ways to start using Cloudbreak. The simplest and easiest solution is hosted by SequenceIQ, however we have two DIY <em>(do it yourself)</em> options as well.</p>
-<h3 id="using-cloudbreak-hosted-by-sequenceiq">Using Cloudbreak - hosted by SequenceIQ</h3>
-<p>The easiest way to start your own Hadoop cluster in your favorite cloud provider is to use our hosted solution. We host, maintain and support <a href="https://cloudbreak.sequenceiq.com/">Cloudbreak</a> for you. </p>
-<p>Please note that Cloudbreak is launching Hadoop clusters on the user's behalf - on different cloud providers. We do not store your cloud provider account details (such as username, password, keys, private SSL certificates, etc), but work around the concept that Identity and Access Management is fully controlled by you - the end user. </p>
-<p>Though Cloudbreak controls your Hadoop cluster lifecycle (start, stop, pause), we <strong>do not</strong> have access to the launched instances. The Hadoop clusters created by Cloudbreak are private to you.</p>
-<h3 id="diy-running-cloudbreak-api-using-docker">DIY - Running Cloudbreak API using Docker</h3>
+<h3 id="running-cloudbreak-api-using-docker">Running Cloudbreak API using Docker</h3>
 <h4 id="database">Database</h4>
 <p>The only dependency that Cloudbreak needs is a postgresql database. The easiest way to spin up a postgresql is of course Docker. Run it first with this line:</p>
 <pre class="prettyprint well"><code>docker run -d --name=&quot;postgresql&quot; -p 5432:5432 -v /tmp/data:/data -e USER=&quot;seqadmin&quot; -e DB=&quot;cloudbreak&quot; -e PASS=&quot;seq123_&quot; paintedfox/postgresql
@@ -159,16 +154,15 @@ docker run -d --name cloudbreak \
 -e &quot;CB_HOST_ADDR=$HOST_ADDR&quot; \
 -e &quot;CB_AZURE_IMAGE_URI=$AZURE_IMAGE_URI&quot; \
 -e &quot;CB_BLUEPRINT_DEFAULTS=$BLUEPRINT_DEFAULTS&quot; \
--e &quot;CB_SNS_SSL=false&quot;
---link postgresql:cb_db -p 8080:8080 \
+--link postgresql:db -p 8080:8080 \
 dockerfile/java bash \
 -c 'curl -o /tmp/cloudbreak-$VERSION.jar https://s3-eu-west-1.amazonaws.com/seq-repo/releases/com/sequenceiq/cloudbreak/$VERSION/cloudbreak-$VERSION.jar &amp;&amp; java -jar /tmp/cloudbreak-$VERSION.jar'
 
 </code></pre>
 
 <p>Note: The system properties prefixed with MAIL_SENDER_ are the SNMP settings required to send emails.</p>
-<h3 id="diy-running-cloudbreak-api-on-the-host">DIY - Running Cloudbreak API on the host</h3>
-<p>If you'd like to run Cloudbreak outside of a Docker container - directly on the host - we provide you shell scripts that starts the application for you.</p>
+<h3 id="running-cloudbreak-api-on-the-host">Running Cloudbreak API on the host</h3>
+<p>If you'd like to run Cloudbreak outside of a Docker container - directly on the host - we provide you shell script that starts the app for you.</p>
 <p>After building the application <em>(./gradlew clean build)</em> please run the following script from the project root:</p>
 <pre class="prettyprint well"><code>./run_cloudbreak.sh &lt;host-addr&gt; \
 &lt;db-user&gt; \
