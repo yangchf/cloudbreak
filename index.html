@@ -131,12 +131,12 @@ Once provisioned, new nodes will take up the load and increase the cluster throu
 <!--quickstart.md-->
 
 <h2 id="quickstart-and-installation">QuickStart and installation</h2>
-<p>We provide you three different ways to start using Cloudbreak. The simplest and easiest solution is hosted by SequenceIQ, however we have two DIY <em>(do it yourself)</em> options as well.</p>
-<h3 id="using-cloudbreak-hosted-by-sequenceiq">Using Cloudbreak - hosted by SequenceIQ</h3>
-<p>The easiest way to start your own Hadoop cluster in your favorite cloud provider is to use our hosted solution. We host, maintain and support <a href="https://cloudbreak.sequenceiq.com/">Cloudbreak</a> for you.</p>
+<p>We provide you three different ways to start using Cloudbreak. The simplest and easiest solution is hosted by SequenceIQ, however we have two DIY <em>(do it/deploy it yourself)</em> options as well.</p>
+<h3 id="hosted-by-sequenceiq-cloudbreak-ui-and-api">Hosted by SequenceIQ - Cloudbreak UI and API</h3>
+<p>The easiest way to start your own Hadoop cluster in your favourite cloud provider is to use our hosted solution. We host, maintain and support <a href="https://cloudbreak.sequenceiq.com/">Cloudbreak</a> for you.</p>
 <p>Please note that Cloudbreak is launching Hadoop clusters on the user's behalf - on different cloud providers. We do not store your cloud provider account details (such as username, password, keys, private SSL certificates, etc), but work around the concept that Identity and Access Management is fully controlled by you - the end user.</p>
 <p>Though Cloudbreak controls your Hadoop cluster lifecycle (start, stop, pause), we <strong>do not</strong> have access to the launched instances. The Hadoop clusters created by Cloudbreak are private to you.</p>
-<h3 id="diy-running-cloudbreak-api-using-docker">DIY - Running Cloudbreak API using Docker</h3>
+<h3 id="diy-deploying-cloudbreak-api-using-docker">DIY - Deploying Cloudbreak API using Docker</h3>
 <h4 id="database">Database</h4>
 <p>The only dependency that Cloudbreak needs is a postgresql database. The easiest way to spin up a postgresql is of course Docker. Run it first with this line:</p>
 <pre class="prettyprint well"><code>docker run -d --name=&quot;postgresql&quot; -p 5432:5432 -v /tmp/data:/data -e USER=&quot;seqadmin&quot; -e DB=&quot;cloudbreak&quot; -e PASS=&quot;seq123_&quot; paintedfox/postgresql
@@ -167,10 +167,10 @@ dockerfile/java bash \
 </code></pre>
 
 <p>Note: The system properties prefixed with MAIL_SENDER_ are the SNMP settings required to send emails.</p>
-<h3 id="diy-running-cloudbreak-api-on-the-host">DIY - Running Cloudbreak API on the host</h3>
+<h3 id="diy-deploying-cloudbreak-api-on-any-host">DIY - Deploying Cloudbreak API on any host</h3>
 <p>The Cloudbreak application can be run outside a docker container - on an arbitrary machine. The only thing required for this is to have the following list of environment variables set:</p>
 <pre class="prettyprint well"><code>
-# The address of the host running the application. This should ebe reachable from the internet (it's also used to deal with SNS notifications)
+# The address of the host running the application. This should be reachable from the internet (it's also used to deal with SNS notifications)
 CB_HOST_ADDR=
 
 # database settings
@@ -204,7 +204,7 @@ CB_BLUEPRINT_DEFAULTS=
 <p>the application can be launched by running the script <code>./run_cloudbreak</code> This script provides some help by validating the environment (run it from the project root)</p>
 <h2 id="configuration">Configuration</h2>
 <h3 id="development">Development</h3>
-<p>In order to be able to receive Amazon push notifications on localhost, you will need to install a secure introspectable tunnel to localhost.</p>
+<p>In order to be able to receive Amazon push notifications on <code>localhost</code>, you will need to install a secure introspectable tunnel to localhost.</p>
 <h4 id="install-and-configure-ngrok">Install and configure ngrok</h4>
 <p>Cloudbreak uses SNS to receive notifications. On OSX you can do the following:</p>
 <pre class="prettyprint well"><code>brew update &amp;&amp; brew install ngrok
@@ -213,7 +213,7 @@ ngrok 8080
 
 <p><em>Note: In the terminal window you'll find displayed a value - this should be set as the <code>CB_HOST_ADDR</code> env variable</em></p>
 <h3 id="production">Production</h3>
-<p>There are no special requirements for production environments.</p>
+<p>There are no special requirements for production environments. Make sure that the SNS or callback ports are available. We suggest to always use HTTPS. </p>
 <!--quickstart.md-->
 
 <!--howitworks.md-->
@@ -408,8 +408,8 @@ Serf uses an efficient gossip protocol to solve three major problems:</p>
 <ol>
 <li>Custom blueprints</li>
 </ol>
-<p>We allow you to build your own Blueprint - for further instractions please check the Apache Ambari <a href="https://cwiki.apache.org/confluence/display/AMBARI/Blueprints">documentation</a>.</p>
-<p>When you are creating clustom Blueprints you can use the components above to build Hadoop services and use them in your on-demand Hadoop cluster.</p>
+<p>We allow you to build your own Blueprint - for further instructions please check the Apache Ambari <a href="https://cwiki.apache.org/confluence/display/AMBARI/Blueprints">documentation</a>.</p>
+<p>When you are creating custom Blueprints you can use the components above to build Hadoop services and use them in your on-demand Hadoop cluster.</p>
 <p>We are trying to figure out the hosts to hostgroups assignments - and order to do so you will need to follow the conventions below:</p>
 <p><em>Note: Apache Ambari community and SequenceIQ is working on an auto-hostgroup assignment algorithm; in the meantime please follow our conventions and check the default blueprints as examples, or ask us to support you.</em></p>
 <ol>
