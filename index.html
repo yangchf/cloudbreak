@@ -133,8 +133,8 @@ Once provisioned, new nodes will take up the load and increase the cluster throu
 <h2 id="quickstart-and-installation">QuickStart and installation</h2>
 <p>We provide you three different ways to start using Cloudbreak. The simplest and easiest solution is hosted by SequenceIQ, however we have two DIY <em>(do it yourself)</em> options as well.</p>
 <h3 id="using-cloudbreak-hosted-by-sequenceiq">Using Cloudbreak - hosted by SequenceIQ</h3>
-<p>The easiest way to start your own Hadoop cluster in your favorite cloud provider is to use our hosted solution. We host, maintain and support <a href="https://cloudbreak.sequenceiq.com/">Cloudbreak</a> for you. </p>
-<p>Please note that Cloudbreak is launching Hadoop clusters on the user's behalf - on different cloud providers. We do not store your cloud provider account details (such as username, password, keys, private SSL certificates, etc), but work around the concept that Identity and Access Management is fully controlled by you - the end user. </p>
+<p>The easiest way to start your own Hadoop cluster in your favorite cloud provider is to use our hosted solution. We host, maintain and support <a href="https://cloudbreak.sequenceiq.com/">Cloudbreak</a> for you.</p>
+<p>Please note that Cloudbreak is launching Hadoop clusters on the user's behalf - on different cloud providers. We do not store your cloud provider account details (such as username, password, keys, private SSL certificates, etc), but work around the concept that Identity and Access Management is fully controlled by you - the end user.</p>
 <p>Though Cloudbreak controls your Hadoop cluster lifecycle (start, stop, pause), we <strong>do not</strong> have access to the launched instances. The Hadoop clusters created by Cloudbreak are private to you.</p>
 <h3 id="diy-running-cloudbreak-api-using-docker">DIY - Running Cloudbreak API using Docker</h3>
 <h4 id="database">Database</h4>
@@ -151,14 +151,14 @@ docker run -d --name cloudbreak \
 -e &quot;AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID&quot; \
 -e &quot;AWS_SECRET_KEY=$AWS_SECRET_KEY&quot; \
 -e &quot;CB_HBM2DDL_STRATEGY=create&quot; \
--e &quot;CB_SMTP_SENDER_USERNAME=$MAIL_SENDER_USERNAME&quot; \
--e &quot;CB_SMTP_SENDER_PASSWORD=$MAIL_SENDER_PASSWORD&quot; \
--e &quot;CB_SMTP_SENDER_HOST=$MAIL_SENDER_HOST&quot; \
--e &quot;CB_SMTP_SENDER_PORT=$MAIL_SENDER_PORT&quot; \
--e &quot;CB_SMTP_SENDER_FROM=$MAIL_SENDER_FROM&quot; \
--e &quot;CB_HOST_ADDR=$HOST_ADDR&quot; \
--e &quot;CB_AZURE_IMAGE_URI=$AZURE_IMAGE_URI&quot; \
--e &quot;CB_BLUEPRINT_DEFAULTS=$BLUEPRINT_DEFAULTS&quot; \
+-e &quot;CB_SMTP_SENDER_USERNAME=$CB_SMTP_SENDER_USERNAME&quot; \
+-e &quot;CB_SMTP_SENDER_PASSWORD=$CB_SMTP_SENDER_PASSWORD&quot; \
+-e &quot;CB_SMTP_SENDER_HOST=$CB_SMTP_SENDER_HOST&quot; \
+-e &quot;CB_SMTP_SENDER_PORT=$CB_SMTP_SENDER_PORT&quot; \
+-e &quot;CB_SMTP_SENDER_FROM=$CB_SMTP_SENDER_FROM&quot; \
+-e &quot;CB_HOST_ADDR=$CB_HOST_ADDR&quot; \
+-e &quot;CB_AZURE_IMAGE_URI=$CB_AZURE_IMAGE_URI&quot; \
+-e &quot;CB_BLUEPRINT_DEFAULTS=$CB_BLUEPRINT_DEFAULTS&quot; \
 -e &quot;CB_SNS_SSL=false&quot;
 --link postgresql:cb_db -p 8080:8080 \
 dockerfile/java bash \
@@ -168,36 +168,40 @@ dockerfile/java bash \
 
 <p>Note: The system properties prefixed with MAIL_SENDER_ are the SNMP settings required to send emails.</p>
 <h3 id="diy-running-cloudbreak-api-on-the-host">DIY - Running Cloudbreak API on the host</h3>
-<p>If you'd like to run Cloudbreak outside of a Docker container - directly on the host - we provide you shell scripts that starts the application for you.</p>
-<p>After building the application <em>(./gradlew clean build)</em> please run the following script from the project root:</p>
-<pre class="prettyprint well"><code>./run_cloudbreak.sh &lt;host-addr&gt; \
-&lt;db-user&gt; \
-&lt;db-pass&gt; \
-&lt;db-host&gt; \
-&lt;db-port&gt; \
-&lt;hbm2ddl-strategy&gt; \
-&lt;smtp-username&gt; \
-&lt;smpt-password \
-&lt;smtp-host&gt; \
-&lt;smtp-port \
-&lt;mail-sender-from&gt;
+<p>The Cloudbreak application can be run outside a docker container - on an arbitrary machine. The only thing required for this is to have the following list of environment variables set:</p>
+<pre class="prettyprint well"><code>
+# The address of the host running the application. This should ebe reachable from the internet (it's also used to deal with SNS notifications)
+CB_HOST_ADDR=
+
+# database settings
+CB_DB_ENV_USER=
+CB_DB_ENV_PASS=
+CB_DB_PORT_5432_TCP_ADDR=
+CB_DB_PORT_5432_TCP_PORT=
+
+# SMTP settings for sending confirmation and password recovery emails to customers
+CB_SMTP_SENDER_USERNAME=
+CB_SMTP_SENDER_PASSWORD=
+CB_SMTP_SENDER_HOST=
+CB_SMTP_SENDER_PORT=
+CB_SMTP_SENDER_FROM=
+
+# AWS related (optional) settings - not setting them causes AWS related operations to fail
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_KEY=
+
+# Azure related settings
+# use this as default AZURE_IMAGE_URI=&quot;http://vmdepoteastus.blob.core.windows.net/linux-community-store/community-62091-a59dcdc1-d82d-4e76-9094-27b8c018a4a1-1.vhd
+CB_AZURE_IMAGE_URI=
+
+# Ambari default blueprint
+# use this as default: BLUEPRINT_DEFAULTS='lambda-architecture,multi-node-hdfs-yarn,single-node-hdfs-yarn'
+CB_BLUEPRINT_DEFAULTS=
 
 </code></pre>
 
-<p>Where:</p>
-<p><code>host-address</code>     - the ngrok generated address to receive SNS notifications</p>
-<p><code>db-user</code>          - database user name</p>
-<p><code>db-pass</code>          - password for the database</p>
-<p><code>db-host</code>          - the address of the machine hosting the database</p>
-<p><code>db-port</code>          - the port where you can connect to the database</p>
-<p><code>hbm2ddl-strategy</code> - the desired value for the <em>hibernate.hbm2ddl.auto</em> configuration</p>
-<p><code>smtp-username</code>    - SMTP username</p>
-<p><code>smpt-password</code>    - SMTP password</p>
-<p><code>smtp-host</code>        - SMTP host address</p>
-<p><code>smtp-port</code>        - SMTP port</p>
-<p><code>mail-sender-from</code> - the email address to use when sending registration confirmation or password renewal emails</p>
-<p>Please note, that configuration properties can be given both as arguments to the script and as system properties.</p>
-<p><em>Warning</em>: When providing configuration as arguments to the script, the arguments should follow the order above!</p>
+<p>After the project is built with the command: <code>./gradlew clean build</code></p>
+<p>the application can be launched by running the script <code>./run_cloudbreak</code> This script provides some help by validating the environment (run it from the project root)</p>
 <h2 id="configuration">Configuration</h2>
 <h3 id="development">Development</h3>
 <p>In order to be able to receive Amazon push notifications on localhost, you will need to install a secure introspectable tunnel to localhost.</p>
@@ -207,33 +211,9 @@ dockerfile/java bash \
 ngrok 8080
 </code></pre>
 
-<p><em>Note: In the terminal window you'll find displayed a value - this is the last argument <code>host-address</code> of the <code>run_cloudbreak.sh</code> script</em></p>
+<p><em>Note: In the terminal window you'll find displayed a value - this should be set as the <code>CB_HOST_ADDR</code> env variable</em></p>
 <h3 id="production">Production</h3>
 <p>There are no special requirements for production environments.</p>
-<pre class="prettyprint well"><code># The host running the cloudbreak app
-CB_HOST_ADDR
-
-# SMTP related properties (required for account registration, password renewal)
-CB_SMTP_SENDER_USERNAME
-CB_SMTP_SENDER_PASSWORD
-CB_SMTP_SENDER_HOST
-CB_SMTP_SENDER_PORT
-CB_SMTP_SENDER_FROM
-
-# Database related properties
-CB_DB_ENV_USER
-CB_DB_ENV_PASS
-CB_DB_PORT_5432_TCP_ADDR
-CB_DB_PORT_5432_TCP_PORT
-CB_HBM2DDL_STRATEGY
-</code></pre>
-
-<p>If you'd like to work with AWS you'll need to set two more system properties:</p>
-<pre class="prettyprint well"><code># AWS credentials
-AWS_ACCESS_KEY_ID
-AWS_SECRET_KEY
-</code></pre>
-
 <!--quickstart.md-->
 
 <!--howitworks.md-->
