@@ -337,7 +337,7 @@ Serf uses an efficient gossip protocol to solve three major problems:</p>
 
 <h2 id="accounts">Accounts</h2>
 <h3 id="cloudbreak-account">Cloudbreak account</h3>
-<p>First and foremost in order to start launching Hadoop clusters you will need to create a Cloudbreak account. C
+<p>First and foremost in order to start launching Hadoop clusters you will need to create a Cloudbreak account.
 Cloudbreak supports registration, forgotten and reset password, and login features at API level.
 All passwords that are stored or sent are hashed - communication is always over a secure HTTPS channel. When you are deploying your own Cloudbreak instance we strongly suggest to configure an SSL certificate.
 Users create and launch Hadoop clusters on their own namespace and security context.</p>
@@ -395,7 +395,7 @@ The goal of the UI is to ease to process and allow you to create a Hadoop cluste
 <p><strong>Amazon AWS</strong></p>
 <p><code>Name:</code> name of your credential</p>
 <p><code>Description:</code> short description of your linked credential</p>
-<p><code>Role ARN:</code> the role string - you can find it at the summary tab of the IAM role </p>
+<p><code>Role ARN:</code> the role string - you can find it at the summary tab of the IAM role</p>
 <p><strong>Azure</strong></p>
 <p><code>Name:</code> name of your credential</p>
 <p><code>Description:</code> short description of your linked credential</p>
@@ -733,7 +733,7 @@ We have received many requests from people to integrate Cloudbreak with 3d party
 <!--releases.md-->
 
 <h2 id="contribution">Contribution</h2>
-<p>So you are about to contribute to the Cloudbreak projects? Awesome! There are many different ways in which you can contribute. We strongly value your feedback, questions, bug reports, and feature requests.
+<p>So you are about to contribute to Cloudbreak? Awesome! There are many different ways in which you can contribute. We strongly value your feedback, questions, bug reports, and feature requests.
 Cloudbreak consist of the following main projects:</p>
 <h3 id="cloudbreak-ui_1">Cloudbreak UI</h3>
 <p>Available: <a href=https://cloudbreak.sequenceiq.com>https://cloudbreak.sequenceiq.com</a></p>
@@ -771,15 +771,33 @@ Before submitting issues please check for duplicate or similar issues. If you ar
 <p>We recommend discussing your plans on the <a href="https://groups.google.com/forum/#!forum/cloudbreak">mailing list</a> before starting to code - especially for more ambitious contributions. This gives other contributors a chance to point you in the right direction, give feedback on your design, and maybe point out if someone else is working on the same thing.</p>
 <h4 id="conventions">Conventions</h4>
 <p>Please write clean code. Universally formatted code promotes ease of writing, reading, and maintenance.
-<em> Do not use @author tags.
-</em> New classes must match our dependency mechanism.
-<em> Code must be formatted according to our <a href="https://gist.github.com/martonsereg/9390889">formatter</a>.
-</em> Code must be checked with our <a href="https://github.com/sequenceiq/cloudbreak/tree/master/config/checkstyle">checkstyle</a>.
-<em> Contributions must pass existing unit tests.
-</em> The code changes must be accompanied by unit tests. In cases where unit tests are not possible or don’t make sense an explanation should be provided.
-<em> New unit tests should be provided to demonstrate bugs and fixes (use Mockito whenever possible).
-</em> The tests should be named <em>Test.java.
-</em> Use slf4j instead of commons logging as the logging facade.</p>
+* Do not use @author tags.</p>
+<ul>
+<li>
+<p>New classes must match our dependency mechanism.</p>
+</li>
+<li>
+<p>Code must be formatted according to our <a href="https://github.com/sequenceiq/cloudbreak/blob/master/config/eclipse_formatter.xml">formatter</a>.</p>
+</li>
+<li>
+<p>Code must be checked with our <a href="https://github.com/sequenceiq/cloudbreak/tree/master/config/checkstyle">checkstyle</a>.</p>
+</li>
+<li>
+<p>Contributions must pass existing unit tests.</p>
+</li>
+<li>
+<p>The code changes must be accompanied by unit tests. In cases where unit tests are not possible or don’t make sense an explanation should be provided.</p>
+</li>
+<li>
+<p>New unit tests should be provided to demonstrate bugs and fixes (use Mockito whenever possible).</p>
+</li>
+<li>
+<p>The tests should be named *Test.java.</p>
+</li>
+<li>
+<p>Use slf4j instead of commons logging as the logging facade.</p>
+</li>
+</ul>
 <h3 id="thank-you">Thank you</h3>
 <p>Huge thanks go to the contributors from the community who have been actively working with the SequenceIQ team. Kudos for that.</p>
 <h3 id="jobs">Jobs</h3>
