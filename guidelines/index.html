@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+
+        <title>Guidelines - Cloudbreak</title>
+        <link href="./css/sequenceiq.doc.min.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="..">Cloudbreak</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            <!-- Main navigation -->
+            <ul class="nav navbar-nav">
+            
+            
+                <li class="active">
+                    <a href="./">Guidelines</a>
+                </li>
+            
+            
+            </ul>
+
+            <!-- Search, Navigation and Repo links -->
+            <ul class="nav navbar-nav navbar-right">
+                
+                <li >
+                    <a rel="next" href="..">
+                        <i class="fa fa-arrow-left"></i> Previous
+                    </a>
+                </li>
+                <li class="disabled">
+                    <a rel="prev" >
+                        Next <i class="fa fa-arrow-right"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#contribution-guidelines">Contribution guidelines</a></li>
+        
+            <li><a href="#cloudbreak-ui">Cloudbreak UI</a></li>
+        
+            <li><a href="#cloudbreak-api">Cloudbreak API</a></li>
+        
+            <li><a href="#cloudbreak-rest-client">Cloudbreak REST client</a></li>
+        
+            <li><a href="#cloudbreak-cli">Cloudbreak CLI</a></li>
+        
+            <li><a href="#cloudbreak-documentation">Cloudbreak documentation</a></li>
+        
+            <li><a href="#ways-to-contribute">Ways to contribute</a></li>
+        
+    
+    </ul>
+</div></div>
+            <div class="col-md-9" role="main">
+
+<h1 id="contribution-guidelines">Contribution guidelines</h1>
+<p>So you are about to contribute to the Cloudbreak projects? Awesome! There are many different ways in which you can contribute. We strongly value your feedback, questions, bug reports, and feature requests.
+Cloudbreak consist of the following main projects:</p>
+<h3 id="cloudbreak-ui">Cloudbreak UI</h3>
+<p>Available: https://cloudbreak.sequenceiq.com</p>
+<p>GitHub: https://github.com/sequenceiq/uluwatu</p>
+<h3 id="cloudbreak-api">Cloudbreak API</h3>
+<p>Available: https://cloudbreak-api.sequenceiq.com/</p>
+<p>GitHub: https://github.com/sequenceiq/cloudbreak</p>
+<h3 id="cloudbreak-rest-client">Cloudbreak REST client</h3>
+<p>GitHub: https://github.com/sequenceiq/cloudbreak-rest-client</p>
+<h3 id="cloudbreak-cli">Cloudbreak CLI</h3>
+<p>GitHub: https://github.com/sequenceiq/cloudbreak-shell</p>
+<h3 id="cloudbreak-documentation">Cloudbreak documentation</h3>
+<p>Product documentation: http://sequenceiq.com/cloudbreak/</p>
+<p>GitHub: https://github.com/sequenceiq/cloudbreak/blob/master/docs/index.md</p>
+<p>API documentation: http://docs.cloudbreak.apiary.io/</p>
+<p>GitHub: https://github.com/sequenceiq/cloudbreak/blob/master/apiary.apib</p>
+<h2 id="ways-to-contribute">Ways to contribute</h2>
+<ul>
+<li>Use Cloudbreak</li>
+<li>Submit a GitHub issue to the appropriate GitHub repository.</li>
+<li>Submit a new feature request (as a GitHub issue).</li>
+<li>Submit a code fix for a bug.</li>
+<li>Submit a unit test.</li>
+<li>Code review pending pull requests and bug fixes.</li>
+<li>Tell others about these projects.</li>
+</ul>
+<h3 id="contributing-code">Contributing code</h3>
+<p>We are always thrilled to receive pull requests, and do our best to process them as fast as possible. Not sure if that typo is worth a pull request? Do it! We will appreciate it.
+The Cloudbreak projects are open source and developed/distributed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache Software License, Version 2.0</a>.
+If you wish to contribute to Cloudbreak (which you're very welcome and encouraged to do so) then you must agree to release the rights of your source under this license.</p>
+<h4 id="creating-issues">Creating issues</h4>
+<p>Any significant improvement should be documented as a GitHub issue before starting to work on it. Please use the appropriate labels - bug, enhancement, etc - this helps while creating the release notes for a version release.
+Before submitting issues please check for duplicate or similar issues. If you are unclear about an issue please feel free to <a href="https://groups.google.com/forum/#!forum/cloudbreak">contact us</a>.</p>
+<h4 id="discuss-your-design">Discuss your design</h4>
+<p>We recommend discussing your plans on the <a href="https://groups.google.com/forum/#!forum/cloudbreak">mailing list</a> before starting to code - especially for more ambitious contributions. This gives other contributors a chance to point you in the right direction, give feedback on your design, and maybe point out if someone else is working on the same thing.</p>
+<h4 id="conventions">Conventions</h4>
+<p>Please write clean code. Universally formatted code promotes ease of writing, reading, and maintenance.
+<em> Do not use @author tags.
+</em> New classes must match our dependency mechanism.
+<em> Code must be formatted according to our <a href="https://gist.github.com/martonsereg/9390889">formatter</a>.
+</em> Code must be checked with our <a href="https://github.com/sequenceiq/cloudbreak/tree/master/config/checkstyle">checkstyle</a>.
+<em> Contributions must pass existing unit tests.
+</em> The code changes must be accompanied by unit tests. In cases where unit tests are not possible or don’t make sense an explanation should be provided.
+<em> New unit tests should be provided to demonstrate bugs and fixes (use Mockito whenever possible).
+</em> The tests should be named <em>Test.java.
+</em> Use slf4j instead of commons logging as the logging facade.</p>
+<h3 id="thank-you">Thank you</h3>
+<p>Huge thanks go to the contributors from the community who have been actively working with the SequenceIQ team. Kudos for that.</p>
+<h3 id="jobs">Jobs</h3>
+<p>Do you like what we are doing? We are looking for exceptional software engineers to join our development team. Would you like to work with others in the open source community?
+Please consider submitting your resume and applying for open positions at jobs@sequenceiq.com.</p>
+</div>
+        </div>
+
+        
+
+        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="./js/bootstrap-3.0.3.min.js"></script>
+        <script src="./js/prettify-1.0.min.js"></script>
+        <script src="./js/base.js"></script>
+    </body>
+</html>
