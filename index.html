@@ -357,9 +357,9 @@ We work around the concept that Identity and Access Management is fully controll
 <p><strong>Account ID:</strong> In case you are using our hosted solution you will need to pass SequenceIQ's account id: 755047402263</p>
 <p><strong>External ID:</strong> provision-ambari (association link)</p>
 <ul>
-<li>Custom policy
-  Use this policy <a href="https://raw.githubusercontent.com/sequenceiq/cloudbreak/documentation/src/main/resources/iam-arn-custom.policy">document</a> to configure the permission to start EC2 instances on the end user's behalf, and use SNS to receive notifications.</li>
+<li>Custom policy</li>
 </ul>
+<p>Use this policy <strong><a href="https://raw.githubusercontent.com/sequenceiq/cloudbreak/documentation/src/main/resources/iam-arn-custom.policy">document</a></strong> to configure the permission to start EC2 instances on the end user's behalf, and use SNS to receive notifications.</p>
 </li>
 </ol>
 <p>Once this is configured, Cloudbreak is ready to launch Hadoop clusters on your behalf. The only thing Cloudbreak requires is the <code>Role ARN</code> (Role for Cross-Account access).</p>
@@ -395,7 +395,7 @@ The goal of the UI is to ease to process and allow you to create a Hadoop cluste
 <p><strong>Amazon AWS</strong></p>
 <p><code>Name:</code> name of your credential</p>
 <p><code>Description:</code> short description of your linked credential</p>
-<p><code>Role ARN:</code> the role string - see Accounts</p>
+<p><code>Role ARN:</code> the role string - you can find it at the summary tab of the IAM role </p>
 <p><strong>Azure</strong></p>
 <p><code>Name:</code> name of your credential</p>
 <p><code>Description:</code> short description of your linked credential</p>
