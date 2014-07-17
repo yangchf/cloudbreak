@@ -76,10 +76,6 @@
         
             <li><a href="#benefits">Benefits</a></li>
         
-            <li><a href="#quickstart-and-installation">QuickStart and installation</a></li>
-        
-            <li><a href="#configuration">Configuration</a></li>
-        
             <li><a href="#how-it-works">How it works?</a></li>
         
             <li><a href="#technology">Technology</a></li>
@@ -91,6 +87,10 @@
             <li><a href="#cloudbreak-ui">Cloudbreak UI</a></li>
         
             <li><a href="#add-new-cloud-providers">Add new cloud providers</a></li>
+        
+            <li><a href="#quickstart-and-installation">QuickStart and installation</a></li>
+        
+            <li><a href="#configuration">Configuration</a></li>
         
             <li><a href="#releases-future-plans">Releases, future plans</a></li>
         
@@ -127,97 +127,6 @@ Once provisioned, new nodes will take up the load and increase the cluster throu
 <h3 id="flexible">Flexible</h3>
 <p>You have the option to choose your favourite cloud provider and their different pricing models. The API translates the calls towards different vendors. However, you develop and use one common API, there is no need to rewrite your code when changing between cloud providers.</p>
 <!--overview.md-->
-
-<!--quickstart.md-->
-
-<h2 id="quickstart-and-installation">QuickStart and installation</h2>
-<p>We provide you three different ways to start using Cloudbreak. The simplest and easiest solution is hosted by SequenceIQ, however we have two DIY <em>(do it/deploy it yourself)</em> options as well.</p>
-<h3 id="hosted-by-sequenceiq-cloudbreak-ui-and-api">Hosted by SequenceIQ - Cloudbreak UI and API</h3>
-<p>The easiest way to start your own Hadoop cluster in your favourite cloud provider is to use our hosted solution. We host, maintain and support <a href="https://cloudbreak.sequenceiq.com/">Cloudbreak</a> for you.</p>
-<p>Please note that Cloudbreak is launching Hadoop clusters on the user's behalf - on different cloud providers. We do not store your cloud provider account details (such as username, password, keys, private SSL certificates, etc), but work around the concept that Identity and Access Management is fully controlled by you - the end user.</p>
-<p>Though Cloudbreak controls your Hadoop cluster lifecycle (start, stop, pause), we <strong>do not</strong> have access to the launched instances. The Hadoop clusters created by Cloudbreak are private to you.</p>
-<h3 id="diy-deploying-cloudbreak-api-using-docker">DIY - Deploying Cloudbreak API using Docker</h3>
-<h4 id="database">Database</h4>
-<p>The only dependency that Cloudbreak needs is a postgresql database. The easiest way to spin up a postgresql is of course Docker. Run it first with this line:</p>
-<pre class="prettyprint well"><code>docker run -d --name=&quot;postgresql&quot; -p 5432:5432 -v /tmp/data:/data -e USER=&quot;seqadmin&quot; -e DB=&quot;cloudbreak&quot; -e PASS=&quot;seq123_&quot; paintedfox/postgresql
-</code></pre>
-
-<h4 id="cloudbreak-rest-api">Cloudbreak REST API</h4>
-<p>After postgresql is running, Cloudbreak can be started locally in a Docker container with the following command. By linking the database container, the necessary environment variables for the connection are set. The postgresql address can be set explicitly through the environment variable: CB_DB_PORT_5432_TCP_ADDR.</p>
-<pre class="prettyprint well"><code>VERSION=0.1-20140623140412
-
-docker run -d --name cloudbreak \
--e &quot;VERSION=$VERSION&quot; \
--e &quot;AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID&quot; \
--e &quot;AWS_SECRET_KEY=$AWS_SECRET_KEY&quot; \
--e &quot;CB_HBM2DDL_STRATEGY=create&quot; \
--e &quot;CB_SMTP_SENDER_USERNAME=$CB_SMTP_SENDER_USERNAME&quot; \
--e &quot;CB_SMTP_SENDER_PASSWORD=$CB_SMTP_SENDER_PASSWORD&quot; \
--e &quot;CB_SMTP_SENDER_HOST=$CB_SMTP_SENDER_HOST&quot; \
--e &quot;CB_SMTP_SENDER_PORT=$CB_SMTP_SENDER_PORT&quot; \
--e &quot;CB_SMTP_SENDER_FROM=$CB_SMTP_SENDER_FROM&quot; \
--e &quot;CB_HOST_ADDR=$CB_HOST_ADDR&quot; \
--e &quot;CB_AZURE_IMAGE_URI=$CB_AZURE_IMAGE_URI&quot; \
--e &quot;CB_BLUEPRINT_DEFAULTS=$CB_BLUEPRINT_DEFAULTS&quot; \
--e &quot;CB_SNS_SSL=false&quot; \
--e &quot;CB_MANAGEMENT_CONTEXT_PATH=/&quot; \
---link postgresql:cb_db -p 8080:8080 \
-dockerfile/java bash \
--c 'curl -o /tmp/cloudbreak-$VERSION.jar https://s3-eu-west-1.amazonaws.com/seq-repo/releases/com/sequenceiq/cloudbreak/$VERSION/cloudbreak-$VERSION.jar &amp;&amp; java -jar /tmp/cloudbreak-$VERSION.jar'
-
-</code></pre>
-
-<p>Note: The system properties prefixed with MAIL_SENDER_ are the SNMP settings required to send emails.</p>
-<h3 id="diy-deploying-cloudbreak-api-on-any-host">DIY - Deploying Cloudbreak API on any host</h3>
-<p>The Cloudbreak application can be run outside a docker container - on an arbitrary machine. The only thing required for this is to have the following list of environment variables set:</p>
-<pre class="prettyprint well"><code>
-# The address of the host running the application. This should be reachable from the internet (it's also used to deal with SNS notifications)
-CB_HOST_ADDR=
-
-# database settings
-CB_DB_ENV_USER=
-CB_DB_ENV_PASS=
-CB_DB_PORT_5432_TCP_ADDR=
-CB_DB_PORT_5432_TCP_PORT=
-
-# SMTP settings for sending confirmation and password recovery emails to customers
-CB_SMTP_SENDER_USERNAME=
-CB_SMTP_SENDER_PASSWORD=
-CB_SMTP_SENDER_HOST=
-CB_SMTP_SENDER_PORT=
-CB_SMTP_SENDER_FROM=
-
-# AWS related (optional) settings - not setting them causes AWS related operations to fail
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_KEY=
-
-# Azure related settings
-# use this as default AZURE_IMAGE_URI=&quot;http://vmdepoteastus.blob.core.windows.net/linux-community-store/community-62091-a59dcdc1-d82d-4e76-9094-27b8c018a4a1-1.vhd
-CB_AZURE_IMAGE_URI=
-
-# Ambari default blueprint
-CB_MANAGEMENT_CONTEXT_PATH=
-
-# use this as default: BLUEPRINT_DEFAULTS='lambda-architecture,multi-node-hdfs-yarn,single-node-hdfs-yarn'
-CB_BLUEPRINT_DEFAULTS=
-
-</code></pre>
-
-<p>After the project is built with the command: <code>./gradlew clean build</code></p>
-<p>the application can be launched by running the script <code>./run_cloudbreak</code> This script provides some help by validating the environment (run it from the project root)</p>
-<h2 id="configuration">Configuration</h2>
-<h3 id="development">Development</h3>
-<p>In order to be able to receive Amazon push notifications on <code>localhost</code>, you will need to install a secure introspectable tunnel to localhost.</p>
-<h4 id="install-and-configure-ngrok">Install and configure ngrok</h4>
-<p>Cloudbreak uses SNS to receive notifications. On OSX you can do the following:</p>
-<pre class="prettyprint well"><code>brew update &amp;&amp; brew install ngrok
-ngrok 8080
-</code></pre>
-
-<p><em>Note: In the terminal window you'll find displayed a value - this should be set as the <code>CB_HOST_ADDR</code> env variable</em></p>
-<h3 id="production">Production</h3>
-<p>There are no special requirements for production environments. Make sure that the SNS or callback ports are available. We suggest to always use HTTPS.</p>
-<!--quickstart.md-->
 
 <!--howitworks.md-->
 
@@ -686,6 +595,97 @@ It is async like the stack creation: the response is sent back immediately, and 
 The sequence diagram below shows the flow.</p>
 <p><img alt="" src="https://raw.githubusercontent.com/sequenceiq/cloudbreak/master/docs/images/seq_diagram_cluster_flow.png" /></p>
 <!--addnewcloud.md-->
+
+<!--quickstart.md-->
+
+<h2 id="quickstart-and-installation">QuickStart and installation</h2>
+<p>We provide you three different ways to start using Cloudbreak. The simplest and easiest solution is hosted by SequenceIQ, however we have two DIY <em>(do it/deploy it yourself)</em> options as well.</p>
+<h3 id="hosted-by-sequenceiq-cloudbreak-ui-and-api">Hosted by SequenceIQ - Cloudbreak UI and API</h3>
+<p>The easiest way to start your own Hadoop cluster in your favourite cloud provider is to use our hosted solution. We host, maintain and support <a href="https://cloudbreak.sequenceiq.com/">Cloudbreak</a> for you.</p>
+<p>Please note that Cloudbreak is launching Hadoop clusters on the user's behalf - on different cloud providers. We do not store your cloud provider account details (such as username, password, keys, private SSL certificates, etc), but work around the concept that Identity and Access Management is fully controlled by you - the end user.</p>
+<p>Though Cloudbreak controls your Hadoop cluster lifecycle (start, stop, pause), we <strong>do not</strong> have access to the launched instances. The Hadoop clusters created by Cloudbreak are private to you.</p>
+<h3 id="diy-deploying-cloudbreak-api-using-docker">DIY - Deploying Cloudbreak API using Docker</h3>
+<h4 id="database">Database</h4>
+<p>The only dependency that Cloudbreak needs is a postgresql database. The easiest way to spin up a postgresql is of course Docker. Run it first with this line:</p>
+<pre class="prettyprint well"><code>docker run -d --name=&quot;postgresql&quot; -p 5432:5432 -v /tmp/data:/data -e USER=&quot;seqadmin&quot; -e DB=&quot;cloudbreak&quot; -e PASS=&quot;seq123_&quot; paintedfox/postgresql
+</code></pre>
+
+<h4 id="cloudbreak-rest-api">Cloudbreak REST API</h4>
+<p>After postgresql is running, Cloudbreak can be started locally in a Docker container with the following command. By linking the database container, the necessary environment variables for the connection are set. The postgresql address can be set explicitly through the environment variable: CB_DB_PORT_5432_TCP_ADDR.</p>
+<pre class="prettyprint well"><code>VERSION=0.1-20140623140412
+
+docker run -d --name cloudbreak \
+-e &quot;VERSION=$VERSION&quot; \
+-e &quot;AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID&quot; \
+-e &quot;AWS_SECRET_KEY=$AWS_SECRET_KEY&quot; \
+-e &quot;CB_HBM2DDL_STRATEGY=create&quot; \
+-e &quot;CB_SMTP_SENDER_USERNAME=$CB_SMTP_SENDER_USERNAME&quot; \
+-e &quot;CB_SMTP_SENDER_PASSWORD=$CB_SMTP_SENDER_PASSWORD&quot; \
+-e &quot;CB_SMTP_SENDER_HOST=$CB_SMTP_SENDER_HOST&quot; \
+-e &quot;CB_SMTP_SENDER_PORT=$CB_SMTP_SENDER_PORT&quot; \
+-e &quot;CB_SMTP_SENDER_FROM=$CB_SMTP_SENDER_FROM&quot; \
+-e &quot;CB_HOST_ADDR=$CB_HOST_ADDR&quot; \
+-e &quot;CB_AZURE_IMAGE_URI=$CB_AZURE_IMAGE_URI&quot; \
+-e &quot;CB_BLUEPRINT_DEFAULTS=$CB_BLUEPRINT_DEFAULTS&quot; \
+-e &quot;CB_SNS_SSL=false&quot; \
+-e &quot;CB_MANAGEMENT_CONTEXT_PATH=/&quot; \
+--link postgresql:cb_db -p 8080:8080 \
+dockerfile/java bash \
+-c 'curl -o /tmp/cloudbreak-$VERSION.jar https://s3-eu-west-1.amazonaws.com/seq-repo/releases/com/sequenceiq/cloudbreak/$VERSION/cloudbreak-$VERSION.jar &amp;&amp; java -jar /tmp/cloudbreak-$VERSION.jar'
+
+</code></pre>
+
+<p>Note: The system properties prefixed with MAIL_SENDER_ are the SNMP settings required to send emails.</p>
+<h3 id="diy-deploying-cloudbreak-api-on-any-host">DIY - Deploying Cloudbreak API on any host</h3>
+<p>The Cloudbreak application can be run outside a docker container - on an arbitrary machine. The only thing required for this is to have the following list of environment variables set:</p>
+<pre class="prettyprint well"><code>
+# The address of the host running the application. This should be reachable from the internet (it's also used to deal with SNS notifications)
+CB_HOST_ADDR=
+
+# database settings
+CB_DB_ENV_USER=
+CB_DB_ENV_PASS=
+CB_DB_PORT_5432_TCP_ADDR=
+CB_DB_PORT_5432_TCP_PORT=
+
+# SMTP settings for sending confirmation and password recovery emails to customers
+CB_SMTP_SENDER_USERNAME=
+CB_SMTP_SENDER_PASSWORD=
+CB_SMTP_SENDER_HOST=
+CB_SMTP_SENDER_PORT=
+CB_SMTP_SENDER_FROM=
+
+# AWS related (optional) settings - not setting them causes AWS related operations to fail
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_KEY=
+
+# Azure related settings
+# use this as default AZURE_IMAGE_URI=&quot;http://vmdepoteastus.blob.core.windows.net/linux-community-store/community-62091-a59dcdc1-d82d-4e76-9094-27b8c018a4a1-1.vhd
+CB_AZURE_IMAGE_URI=
+
+# Ambari default blueprint
+CB_MANAGEMENT_CONTEXT_PATH=
+
+# use this as default: BLUEPRINT_DEFAULTS='lambda-architecture,multi-node-hdfs-yarn,single-node-hdfs-yarn'
+CB_BLUEPRINT_DEFAULTS=
+
+</code></pre>
+
+<p>After the project is built with the command: <code>./gradlew clean build</code></p>
+<p>the application can be launched by running the script <code>./run_cloudbreak</code> This script provides some help by validating the environment (run it from the project root)</p>
+<h2 id="configuration">Configuration</h2>
+<h3 id="development">Development</h3>
+<p>In order to be able to receive Amazon push notifications on <code>localhost</code>, you will need to install a secure introspectable tunnel to localhost.</p>
+<h4 id="install-and-configure-ngrok">Install and configure ngrok</h4>
+<p>Cloudbreak uses SNS to receive notifications. On OSX you can do the following:</p>
+<pre class="prettyprint well"><code>brew update &amp;&amp; brew install ngrok
+ngrok 8080
+</code></pre>
+
+<p><em>Note: In the terminal window you'll find displayed a value - this should be set as the <code>CB_HOST_ADDR</code> env variable</em></p>
+<h3 id="production">Production</h3>
+<p>There are no special requirements for production environments. Make sure that the SNS or callback ports are available. We suggest to always use HTTPS.</p>
+<!--quickstart.md-->
 
 <!--releases.md-->
 
