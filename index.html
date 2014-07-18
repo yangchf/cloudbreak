@@ -345,7 +345,9 @@ Users create and launch Hadoop clusters on their own namespace and security cont
 We work around the concept that Identity and Access Management is fully controlled by you - the end user. The Cloudbreak <em>deployer</em> is purely acting on behalf of the end user - without having access to the user's account.</p>
 <p><strong>How does this work</strong>?</p>
 <h3 id="configuring-the-aws-ec2-account">Configuring the AWS EC2 account</h3>
-<p>Once you have logged in Cloudbreak you will have to link your AWS account with the Cloudbreak one. In order to do that you will need to configure an IAM Role.</p>
+<p>Once you have logged in Cloudbreak you will have to link your AWS account with the Cloudbreak one. In order to do that you will need to configure an IAM Role.
+You can do this on the management console, or - if you have aws-cli configured - by running a small script we're providing in the <code>docs/aws</code> folder.</p>
+<h4 id="create-iam-role-on-the-console">Create IAM role on the console</h4>
 <ol>
 <li>Log in to the AWS management console with the user account you'd like to use with Cloudbreak</li>
 <li>Go to IAM and select Roles</li>
@@ -361,6 +363,13 @@ We work around the concept that Identity and Access Management is fully controll
 </ul>
 <p>Use this policy <strong><a href="https://raw.githubusercontent.com/sequenceiq/cloudbreak/master/docs/aws/iam_role.policy">document</a></strong> to configure the permission to start EC2 instances on the end user's behalf, and use SNS to receive notifications.</p>
 </li>
+</ol>
+<h4 id="create-iam-role-with-the-create-script">Create IAM role with the create script</h4>
+<ol>
+<li>Download the contents of <a href="https://github.com/sequenceiq/cloudbreak/tree/master/docs/aws">this folder</a> in a directory.</li>
+<li>Enter the directory</li>
+<li>Run <code>./create-iam-role</code></li>
+<li>Copy the resulting role ARN</li>
 </ol>
 <p>Once this is configured, Cloudbreak is ready to launch Hadoop clusters on your behalf. The only thing Cloudbreak requires is the <code>Role ARN</code> (Role for Cross-Account access).</p>
 <h3 id="configuring-the-microsoft-azure-account">Configuring the Microsoft Azure account</h3>
