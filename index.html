@@ -375,6 +375,9 @@ Additionally when you are creating Templates you can specify a <code>password</c
 <li>You should download the generated <code>certification</code></li>
 <li>On Azure go to Settings and <code>Management Certificates</code> and upload the <code>cert</code> file</li>
 </ol>
+<p>Use <code>openssl</code> to generate an X509 certificate with a 2048-bit RSA keypair. Please answer the few questions that the openssl prompts for (or you may leave them blank). The content in these fields is not used by the platform:</p>
+<p><code>openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout myPrivateKey.key -out myCert.pem</code></p>
+<p>The content of the myCert.pem file is the publicKey in the credential requests.</p>
 <p>You are done - from now on Cloudbreak can launch Azure instances on your behalf.</p>
 <p><em>Note1: Cloudbreak does not store any login details into these instances - when you are creating Templates you can specify a <code>password</code> or <code>SSH Public key</code> which you can use to login into the launched instances.</em></p>
 <p><em>Note2: Because Azure does not directly support third party public images we will have to copy the used image from VM Depot into your storage account. The steps below need to be finished ONCE and only ONCE before any stack is created for every affinity group:</em></p>
@@ -396,11 +399,13 @@ The goal of the UI is to ease to process and allow you to create a Hadoop cluste
 <p><code>Name:</code> name of your credential</p>
 <p><code>Description:</code> short description of your linked credential</p>
 <p><code>Role ARN:</code> the role string - you can find it at the summary tab of the IAM role</p>
+<p><code>SSH public key:</code> if you specify an SSH public key you can use your private key later to log into your launched instances</p>
 <p><strong>Azure</strong></p>
 <p><code>Name:</code> name of your credential</p>
 <p><code>Description:</code> short description of your linked credential</p>
 <p><code>Subscription Id:</code> your Azure subscription id - see Accounts</p>
 <p><code>File password:</code> your generated JKS file password - see Accounts</p>
+<p><code>SSH public key:</code> if you specify an SSH public key you can use your private key later to log into your launched instances (The key generation process is described in the Configuring the Microsoft Azure account section)</p>
 <h3 id="manage-templates">Manage templates</h3>
 <p>Using manage templates you can create infrastructure templates.</p>
 <p><strong>Amazon AWS</strong></p>
@@ -408,7 +413,6 @@ The goal of the UI is to ease to process and allow you to create a Hadoop cluste
 <p><code>Description:</code> short description of your template</p>
 <p><code>AMI:</code> the AMI which contains the Docker containers</p>
 <p><code>SSH location:</code> allowed inbound SSH access. Use 0.0.0.0/0 as default</p>
-<p><code>SSH key name:</code> your SSH key name used on AWS</p>
 <p><code>Region:</code> AWS region where you'd like to launch your cluster</p>
 <p><code>Instance type:</code> the Amazon instance type to be used - we suggest to use at least small or medium instances</p>
 <p><strong>Azure</strong></p>
@@ -418,7 +422,6 @@ The goal of the UI is to ease to process and allow you to create a Hadoop cluste
 <p><code>Image name:</code> The Azure base image used</p>
 <p><code>Instance type:</code> the Azure instance type to be used - we suggest to use at least small or medium instances</p>
 <p><code>Password:</code> if you specify a password you can use it later to log into you launched instances</p>
-<p><code>SSH public key</code> if you specify an SSH public key you can use your private key later to log into you launched instances</p>
 <h3 id="manage-blueprints">Manage blueprints</h3>
 <p>Blueprints are your declarative definition of a Hadoop cluster.</p>
 <p><code>Name:</code> name of your blueprint</p>
