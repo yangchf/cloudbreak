@@ -389,7 +389,7 @@ Additionally when you are creating Templates you can specify a <code>password</c
 <p>The content of the myCert.pem file is the publicKey in the credential requests.</p>
 <p>You are done - from now on Cloudbreak can launch Azure instances on your behalf.</p>
 <p><em>Note1: Cloudbreak does not store any login details into these instances - when you are creating Templates you can specify a <code>password</code> or <code>SSH Public key</code> which you can use to login into the launched instances.</em></p>
-<p><em>Note2: Because Azure does not directly support third party public images we will have to copy the used image from VM Depot into your storage account. The steps below need to be finished ONCE and only ONCE before any stack is created for every affinity group:</em></p>
+<p><em>Note2: Because Azure does not directly support third party public images we will have to copy the used image from VM Depot into your storage account. The steps below need to be finished ONCE and only ONCE before any stack is created for every affinity group - <strong>this is an automated step</strong> - we have just highlighted in order to point out the first time slowness:</em></p>
 <p><em>1. Get the VM image - http://vmdepot.msopentech.com/Vhd/Show?vhdId=42480&amp;version=43564</em></p>
 <p><em>2. Copy the VHD blob from above (community images) into your storage account</em></p>
 <p><em>3. Create a VM image from the copied VHD blob.</em></p>
