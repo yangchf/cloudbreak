@@ -84,6 +84,8 @@
         
             <li><a href="#accounts">Accounts</a></li>
         
+            <li><a href="#roles">Roles</a></li>
+        
             <li><a href="#cloudbreak-ui">Cloudbreak UI</a></li>
         
             <li><a href="#add-new-cloud-providers">Add new cloud providers</a></li>
@@ -397,12 +399,38 @@ Additionally when you are creating Templates you can specify a <code>password</c
 <p><em>This process will take 20 minutes so be patient - but this step will have do be done once and only once.</em></p>
 <!--accounts.md-->
 
+<h2 id="roles">Roles</h2>
+<p>Cloudbreak defines three distinct roles:</p>
+<ol>
+<li>CLOUDBREAK_DEPLOYER</li>
+<li>COMPANY_ADMIN</li>
+<li>COMPANY_USER</li>
+<li>REGULAR_USER</li>
+</ol>
+<h3 id="cloudbreak-deployer">Cloudbreak deployer</h3>
+<p>This is the <code>master</code> role - currently it's not used.</p>
+<h3 id="company-admin">Company admin</h3>
+<p>We have introduced the notion of companies - and with comes an administrator role. Upon registration a user can specify whether it's a regular user or a company user. If someone choses to be a company user then we will register that company in the system. A company is a unique entity and can't be registered twice. If the company is already registered and you think that is a mistake please let us know. 
+The extra rights associated with the company admin role are:</p>
+<ul>
+<li>Invite colleagues under the company account</li>
+<li>Share company wide resources (credential, blueprints, templates)</li>
+<li>See resources created by colleagues</li>
+<li>See clusters started by colleagues</li>
+<li>Management and reporting tool available </li>
+</ul>
+<h3 id="company-user">Company user</h3>
+<p>A company user is a user who has been invited to join Cloudbreak by his company administrator. Can see (if made available by the company admin) shared resources. Company users activity will show up under the management and reporting tool for company wide statistics. Apart from common company wide resources, the company users will manage their own private resources. </p>
+<h3 id="regular-user">Regular user</h3>
+<p>Users who directly register and are not company administrator will be regular Cloudbreak users. They manage their own private resources.</p>
 <!--ui.md-->
 
 <h2 id="cloudbreak-ui">Cloudbreak UI</h2>
 <p>When we have started to work on Cloudbreak, our main goal was to create an easy to use, cloud and Hadoop distribution agnostic Hadoop as a Service API. Though we always like to automate everything and approach things with a very DevOps mindset, as a side project we have created a UI for Cloudbreak as well.
 The goal of the UI is to ease to process and allow you to create a Hadoop cluster on your favourite cloud provider in <code>one-click</code>.</p>
 <p>The UI is built on the foundation of the Cloudbreak REST API. You can access the UI <a href="https://cloudbreak.sequenceiq.com/">here</a>.</p>
+<h3 id="user-registration">User registration</h3>
+<p>While we consider the registration process quite simple, we'd like to explain the notion of <strong>companies</strong>. When a user registers as a <code>company admin</code> it means that he will be the administrator of that company - further colleagues will have the opportunity to join the <strong>company</strong> upon being invited by the admin user. </p>
 <h3 id="manage-credentials">Manage credentials</h3>
 <p>Using manage credentials you can link your cloud account with the Cloudbreak account.</p>
 <p><strong>Amazon AWS</strong></p>
