@@ -400,27 +400,24 @@ Additionally when you are creating Templates you can specify a <code>password</c
 <h2 id="roles">Roles</h2>
 <p>Cloudbreak defines three distinct roles:</p>
 <ol>
-<li>CLOUDBREAK_DEPLOYER</li>
-<li>COMPANY_ADMIN</li>
-<li>COMPANY_USER</li>
-<li>REGULAR_USER</li>
+<li>DEPLOYER</li>
+<li>ACCOUNT_ADMIN</li>
+<li>ACCOUNT_USER</li>
 </ol>
 <h3 id="cloudbreak-deployer">Cloudbreak deployer</h3>
-<p>This is the <code>master</code> role - currently it's not used.</p>
-<h3 id="company-admin">Company admin</h3>
-<p>We have introduced the notion of companies - and with comes an administrator role. Upon registration a user can specify whether it's a regular user or a company user. If someone choses to be a company user then we will register that company in the system. A company is a unique entity and can't be registered twice. If the company is already registered and you think that is a mistake please let us know. 
-The extra rights associated with the company admin role are:</p>
+<p>This is the <code>master</code> role - the user which is created during the deployment process will have this role.</p>
+<h3 id="account-admin">Account admin</h3>
+<p>We have introduced the notion of accounts - and with that comes an administrator role. Upon registration a user will become an account administrator. </p>
+<p>The extra rights associated with the account admin role are:</p>
 <ul>
-<li>Invite colleagues under the company account</li>
-<li>Share company wide resources (credential, blueprints, templates)</li>
-<li>See resources created by colleagues</li>
-<li>See clusters started by colleagues</li>
+<li>Invite users to join the account</li>
+<li>Share account wide resources (credential, blueprints, templates)</li>
+<li>See resources created by account users</li>
+<li>Monitor clusters started by account users</li>
 <li>Management and reporting tool available </li>
 </ul>
-<h3 id="company-user">Company user</h3>
-<p>A company user is a user who has been invited to join Cloudbreak by his company administrator. Can see (if made available by the company admin) shared resources. Company users activity will show up under the management and reporting tool for company wide statistics. Apart from common company wide resources, the company users will manage their own private resources. </p>
-<h3 id="regular-user">Regular user</h3>
-<p>Users who directly register and are not company administrator will be regular Cloudbreak users. They manage their own private resources.</p>
+<h3 id="account-user">Account user</h3>
+<p>An account user is a user who has been invited to join Cloudbreak by an account administrator. Account users activity will show up in the management and reporting tool for account wide statistics - accessible by the account administrator. Apart from common account wide resources, the account users can manage their own private resources. </p>
 <!--ui.md-->
 
 <h2 id="cloudbreak-ui">Cloudbreak UI</h2>
@@ -454,7 +451,7 @@ The goal of the UI is to ease to process and allow you to create a Hadoop cluste
 <p><code>Attached volumes per instance:</code> the number of disks to be attached</p>
 <p><code>Volume size (GB):</code> the size of the attached disks (in GB)</p>
 <p><code>Volume type:</code> option to choose SSD or regular HDD</p>
-<p><code>Spot price:</code> option to set a spot price </p>
+<p><code>Spot price:</code> option to set a spot price - not mandatory, if specified we will request spot price instances (which might take a while or never be fulfilled by Amazon)</p>
 <p><strong>Azure</strong></p>
 <p><code>Name:</code> name of your template</p>
 <p><code>Description:</code> short description of your template</p>
@@ -652,11 +649,11 @@ The sequence diagram below shows the flow.</p>
 <p>Though Cloudbreak controls your Hadoop cluster lifecycle (start, stop, pause), we <strong>do not</strong> have access to the launched instances. The Hadoop clusters created by Cloudbreak are private to you.</p>
 <h3 id="diy-deploying-cloudbreak-api-using-docker">DIY - Deploying Cloudbreak API using Docker</h3>
 <p>To deploy a running Coudbreak instance the only thing you will need to do is to get the code first.</p>
-<pre class="prettyprint well"><code>git clone git@github.com:sequenceiq/docker-cloudbreak.git
+<pre class="prettyprint well"><code>git clone https://github.com/sequenceiq/cloudbreak.git
 cd docker-cloudbreak
 </code></pre>
 
-<p>Edit the ENV variables and you are reay to provison Cloudbreak.</p>
+<p>Lauch the script below and follow the instructions.</p>
 <pre class="prettyprint well"><code>./start_cloudbreak.sh
 </code></pre>
 
