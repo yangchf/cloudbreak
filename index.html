@@ -650,8 +650,9 @@ The sequence diagram below shows the flow.</p>
 <p>Though Cloudbreak controls your Hadoop cluster lifecycle (start, stop, pause), we <strong>do not</strong> have access to the launched instances. The Hadoop clusters created by Cloudbreak are private to you.</p>
 <h3 id="diy-deploying-cloudbreak-api-using-docker">DIY - Deploying Cloudbreak API using Docker</h3>
 <p>To deploy a running Coudbreak instance the only thing you will need to do is to get the code first.</p>
-<pre class="prettyprint well"><code>git clone https://github.com/sequenceiq/docker-cloudbreak/tree/0.1.21
+<pre class="prettyprint well"><code>git clone https://github.com/sequenceiq/docker-cloudbreak.git
 cd docker-cloudbreak
+git checkout -b 0.1.21
 </code></pre>
 
 <p>Lauch the script below and follow the instructions.</p>
