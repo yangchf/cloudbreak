@@ -650,7 +650,7 @@ The sequence diagram below shows the flow.</p>
 <p>Though Cloudbreak controls your Hadoop cluster lifecycle (start, stop, pause), we <strong>do not</strong> have access to the launched instances. The Hadoop clusters created by Cloudbreak are private to you.</p>
 <h3 id="diy-deploying-cloudbreak-api-using-docker">DIY - Deploying Cloudbreak API using Docker</h3>
 <p>To deploy a running Coudbreak instance the only thing you will need to do is to get the code first.</p>
-<pre class="prettyprint well"><code>git clone https://github.com/sequenceiq/cloudbreak.git
+<pre class="prettyprint well"><code>git clone https://github.com/sequenceiq/docker-cloudbreak/tree/0.1.21
 cd docker-cloudbreak
 </code></pre>
 
@@ -667,7 +667,7 @@ cd docker-cloudbreak
 <p>Also we needed to find a way to speed up the process of adding new cloud providers, and be able to <code>ship</code> Hadoop between clouds without re-writing and re-engineering our code base each and every time - welcome <strong>Docker</strong>.</p>
 <p>All the Hadoop ecosystem related code, configuration and services are inside Docker containers - and these containers are launched on VMs of cloud providers or physical hardware - the end result is the same: a <strong>resilient and dynamic</strong> Hadoop cluster.</p>
 <p>We needed to find a unified way to provision, manage and configure Hadoop clusters - welcome <strong>Apache Ambari</strong>.</p>
-<h3 id="public-beta-01">Public Beta - 0.1</h3>
+<h3 id="public-beta-0121">Public Beta - 0.1.21</h3>
 <p>The first public beta version of Cloudbreak supports Hadoop on Amazon's EC2 and Microsoft's Azure cloud providers. The currently supported Hadoop is the Hortonworks Data Platform - the 100% open source Hadoop distribution.</p>
 <p>Versions:</p>
 <p>CentOS - 6.5
