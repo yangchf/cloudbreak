@@ -6,9 +6,12 @@ import java.io.StringReader;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.Security;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMReader;
@@ -48,6 +51,16 @@ import com.google.api.services.dns.model.Change;
 import com.google.api.services.dns.model.ManagedZone;
 import com.google.api.services.dns.model.ManagedZonesListResponse;
 import com.google.api.services.dns.model.ResourceRecordSet;
+import com.google.api.services.manager.Manager;
+import com.google.api.services.manager.ManagerScopes;
+import com.google.api.services.manager.model.Deployment;
+import com.google.api.services.manager.model.DiskAttachment;
+import com.google.api.services.manager.model.Module;
+import com.google.api.services.manager.model.NewDisk;
+import com.google.api.services.manager.model.NewDiskInitializeParams;
+import com.google.api.services.manager.model.ReplicaPoolModule;
+import com.google.api.services.manager.model.ReplicaPoolParams;
+import com.google.api.services.manager.model.ReplicaPoolParamsV1Beta1;
 import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.StorageScopes;
 import com.google.common.collect.ImmutableList;
@@ -65,7 +78,9 @@ public class GccStackUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GccStackUtil.class);
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    private static final List<String> SCOPES = Arrays.asList(ComputeScopes.COMPUTE, StorageScopes.DEVSTORAGE_FULL_CONTROL);
+    private static final List<String> SCOPES = Arrays.asList(ComputeScopes.COMPUTE, StorageScopes.DEVSTORAGE_FULL_CONTROL,
+            ManagerScopes.COMPUTE, ManagerScopes.NDEV_CLOUDMAN, ManagerScopes.APPENGINE_ADMIN, ManagerScopes.CLOUD_PLATFORM,
+            ManagerScopes.DEVSTORAGE_READ_WRITE);
 
     private static final int MAX_POLLING_ATTEMPTS = 60;
     private static final int POLLING_INTERVAL = 5000;
@@ -109,6 +124,33 @@ public class GccStackUtil {
                     .setHttpRequestInitializer(credential)
                     .build();
             return compute;
+        } catch (GeneralSecurityException e) {
+            LOGGER.info("Problem with the Google cloud stack generation: " + e.getMessage());
+        } catch (IOException e) {
+            LOGGER.info("Problem with the Google cloud stack generation: " + e.getMessage());
+        } catch (Exception e) {
+            LOGGER.info("Problem with the Google cloud stack generation: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public Manager buildManager(GccCredential gccCredential, String appName) {
+        try {
+            HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+            BufferedReader br = new BufferedReader(new StringReader(gccCredential.getServiceAccountPrivateKey()));
+            Security.addProvider(new BouncyCastleProvider());
+            KeyPair kp = (KeyPair) new PEMReader(br).readObject();
+            GoogleCredential credential = new GoogleCredential.Builder().setTransport(httpTransport)
+                    .setJsonFactory(JSON_FACTORY)
+                    .setServiceAccountId(gccCredential.getServiceAccountId())
+                    .setServiceAccountScopes(SCOPES)
+                    .setServiceAccountPrivateKey(kp.getPrivate())
+                    .build();
+            Manager manager = new Manager.Builder(
+                    httpTransport, JSON_FACTORY, null).setApplicationName(appName)
+                    .setHttpRequestInitializer(credential)
+                    .build();
+            return manager;
         } catch (GeneralSecurityException e) {
             LOGGER.info("Problem with the Google cloud stack generation: " + e.getMessage());
         } catch (IOException e) {
@@ -189,6 +231,96 @@ public class GccStackUtil {
         resourceRecordSet.setType("A");
         resourceRecordSet.setRrdatas(ips);
         return resourceRecordSet;
+    }
+
+    public List<Deployment> listDeployments(Manager manager, Stack stack) throws IOException {
+        GccTemplate gccTemplate = (GccTemplate) stack.getTemplate();
+        GccCredential credential = (GccCredential) stack.getCredential();
+        Manager.Deployments.List list = manager.deployments().list(credential.getProjectId(), gccTemplate.getGccZone().getValue());
+        return list.execute().getResources();
+    }
+
+    public void removeDeployment(Manager manager, Stack stack) throws IOException {
+        GccTemplate gccTemplate = (GccTemplate) stack.getTemplate();
+        GccCredential credential = (GccCredential) stack.getCredential();
+        Manager.Deployments.Delete delete = manager.deployments().delete(credential.getProjectId(), gccTemplate.getGccZone().getValue(), stack.getName());
+        delete.execute();
+    }
+
+    public Deployment buildDeployments(Manager manager, Stack stack) throws IOException {
+        GccTemplate gccTemplate = (GccTemplate) stack.getTemplate();
+        GccCredential credential = (GccCredential) stack.getCredential();
+        Deployment deployment = new Deployment();
+        deployment.setTemplateName(stack.getName());
+        deployment.setName(stack.getName());
+
+        Manager.Deployments.Insert insert = manager.deployments().insert(credential.getProjectId(), gccTemplate.getGccZone().getRegion(), deployment);
+        return insert.execute();
+    }
+
+    public List<com.google.api.services.manager.model.Template> listTemplates(Manager manager, Stack stack) throws IOException {
+        GccTemplate gccTemplate = (GccTemplate) stack.getTemplate();
+        GccCredential credential = (GccCredential) stack.getCredential();
+        Manager.Templates.List list = manager.templates().list(credential.getProjectId());
+        return list.execute().getResources();
+    }
+
+    public void removeTemplate(Manager manager, Stack stack) throws IOException {
+        GccTemplate gccTemplate = (GccTemplate) stack.getTemplate();
+        GccCredential credential = (GccCredential) stack.getCredential();
+        Manager.Templates.Delete delete = manager.templates().delete(credential.getProjectId(), stack.getName());
+        delete.execute();
+    }
+
+    public com.google.api.services.manager.model.Template buildTemplate(Compute compute, Manager manager, Stack stack, String userData, Long size) throws IOException {
+        GccTemplate gccTemplate = (GccTemplate) stack.getTemplate();
+        GccCredential credential = (GccCredential) stack.getCredential();
+        com.google.api.services.manager.model.Template template = new com.google.api.services.manager.model.Template();
+        template.setName(stack.getName());
+        Map<String, Module> modules = new HashMap<>();
+        Module module1 = new Module();
+        module1.setType("REPLICA_POOL");
+        ReplicaPoolModule replicaPoolModule = new ReplicaPoolModule();
+        replicaPoolModule.setNumReplicas(stack.getNodeCount());
+        ReplicaPoolParams replicaPoolParams = new ReplicaPoolParams();
+        ReplicaPoolParamsV1Beta1 replicaPoolParamsV1Beta1 = new ReplicaPoolParamsV1Beta1();
+        replicaPoolParamsV1Beta1.setAutoRestart(true);
+        NewDisk newDisk = new NewDisk();
+        newDisk.setAutoDelete(true);
+        newDisk.setBoot(true);
+        NewDiskInitializeParams newDiskInitializeParams = new NewDiskInitializeParams();
+        newDiskInitializeParams.setDiskSizeGb(size.longValue());
+        newDiskInitializeParams.setDiskType("pd-standard");
+        newDiskInitializeParams.setSourceImage(GccImageType.DEBIAN_HACK.getAmbariUbuntu(credential.getProjectId()));
+        newDisk.setInitializeParams(newDiskInitializeParams);
+
+
+        replicaPoolParamsV1Beta1.setDisksToCreate(Arrays.asList(newDisk));
+        replicaPoolParamsV1Beta1.setZone(gccTemplate.getGccZone().getValue());
+        replicaPoolParamsV1Beta1.setBaseInstanceName(stack.getName());
+        replicaPoolParamsV1Beta1.setMachineType(gccTemplate.getGccInstanceType().getValue());
+       /* Metadata.SimpleEntry<String, String> item1 = new Metadata.SimpleEntry<String, String>().;
+        item1.se("sshKeys");
+        item1.setValue("ubuntu:" + credential.getPublicKey());
+
+        Metadata.Items item2 = new Metadata.Items();
+        item2.setKey("startup-script");
+        item2.setValue(userData);
+
+        Metadata metadata = new Metadata();
+        metadata.setItems(Lists.<Metadata.Items>newArrayList());
+        metadata.getItems().add(item1);
+        metadata.getItems().add(item2);
+        replicaPoolParamsV1Beta1.setMetadata(metadata);*/
+        replicaPoolParamsV1Beta1.setNetworkInterfaces(buildManagerNetworkInterfaces(compute, credential.getProjectId(), stack.getName()));
+        replicaPoolParams.setV1beta1(replicaPoolParamsV1Beta1);
+        replicaPoolModule.setReplicaPoolParams(replicaPoolParams);
+        module1.setReplicaPoolModule(replicaPoolModule);
+        modules.put("sequenceiq", module1);
+        template.setModules(modules);
+
+        Manager.Templates.Insert insert = manager.templates().insert(credential.getProjectId(), template);
+        return insert.execute();
     }
 
     public List<Disk> listDisks(Compute compute, GccCredential gccCredential) throws IOException {
@@ -334,6 +466,17 @@ public class GccStackUtil {
         return networkInterfaces;
     }
 
+    public List<com.google.api.services.manager.model.NetworkInterface> buildManagerNetworkInterfaces(Compute compute, String projectId, String name) throws IOException {
+        Network network = new Network();
+        network.setName(name);
+        network.setIPv4Range("10.0.0.0/24");
+   //        buildFireWallOut(compute, projectId, name);
+  //      buildFireWallIn(compute, projectId, name);
+        List<com.google.api.services.manager.model.NetworkInterface> networkInterfaces = new ArrayList<>();
+        networkInterfaces.add(buildManagerNetworkInterface(projectId, name));
+        return networkInterfaces;
+    }
+
     public Route buildRoute(Compute compute, String projectId, String networkName, Stack stack, int node, Resource machineResource) throws IOException {
         Route route = new Route();
         route.setNetwork(String.format("https://www.googleapis.com/compute/v1/projects/%s/global/networks/%s", projectId, networkName));
@@ -356,6 +499,17 @@ public class GccStackUtil {
         accessConfig.setType("ONE_TO_ONE_NAT");
         iface.setAccessConfigs(ImmutableList.of(accessConfig));
         iface.setNetwork(String.format("https://www.googleapis.com/compute/v1/projects/%s/global/networks/%s", projectId, name));
+        return iface;
+    }
+
+    public com.google.api.services.manager.model.NetworkInterface buildManagerNetworkInterface(String projectId, String name) {
+        com.google.api.services.manager.model.NetworkInterface iface = new com.google.api.services.manager.model.NetworkInterface();
+        iface.setName(name);
+        com.google.api.services.manager.model.AccessConfig accessConfig = new com.google.api.services.manager.model.AccessConfig();
+        accessConfig.setName(name);
+        accessConfig.setType("ONE_TO_ONE_NAT");
+        iface.setAccessConfigs(ImmutableList.of(accessConfig));
+        iface.setNetwork(name);
         return iface;
     }
 

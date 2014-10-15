@@ -139,6 +139,7 @@ dependencies {
     compile group: 'com.google.apis', name: 'google-api-services-compute', version: 'v1-rev1-1.17.0-rc'
     compile group: 'com.google.apis', name: 'google-api-services-storage', version: 'v1-rev6-1.19.0'
     compile group: 'com.google.apis', name: 'google-api-services-dns', version: 'v1beta1-rev9-1.19.0'
+    compile group: 'com.google.apis', name: 'google-api-services-manager', version:'v1beta2-rev12-1.19.0'
 
     compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.47'
     compile group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.47'

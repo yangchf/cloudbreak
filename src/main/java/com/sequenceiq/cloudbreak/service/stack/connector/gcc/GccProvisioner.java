@@ -19,6 +19,7 @@ import com.google.api.services.compute.model.AttachedDisk;
 import com.google.api.services.compute.model.Disk;
 import com.google.api.services.compute.model.Instance;
 import com.google.api.services.compute.model.NetworkInterface;
+import com.google.api.services.manager.Manager;
 import com.sequenceiq.cloudbreak.conf.ReactorConfig;
 import com.sequenceiq.cloudbreak.controller.BuildStackFailureException;
 import com.sequenceiq.cloudbreak.controller.InternalServerException;
@@ -33,7 +34,6 @@ import com.sequenceiq.cloudbreak.domain.Status;
 import com.sequenceiq.cloudbreak.repository.RetryingStackUpdater;
 import com.sequenceiq.cloudbreak.service.stack.connector.Provisioner;
 import com.sequenceiq.cloudbreak.service.stack.event.AddInstancesComplete;
-import com.sequenceiq.cloudbreak.service.stack.event.ProvisionComplete;
 import com.sequenceiq.cloudbreak.service.stack.event.StackUpdateSuccess;
 
 import reactor.core.Reactor;
@@ -62,7 +62,13 @@ public class GccProvisioner implements Provisioner {
         GccCredential credential = (GccCredential) setupProperties.get(CREDENTIAL);
         Set<Resource> vms = new HashSet<>();
         try {
+            Manager manager = gccStackUtil.buildManager(credential, stack.getName());
             Compute compute = gccStackUtil.buildCompute(credential, stack.getName());
+
+            gccStackUtil.buildTemplate(compute, manager, stack, userData, SIZE);
+            gccStackUtil.buildDeployments(manager, stack);
+
+           /* Compute compute = gccStackUtil.buildCompute(credential, stack.getName());
             List<NetworkInterface> networkInterfaces = gccStackUtil.buildNetworkInterfaces(compute, credential.getProjectId(), stack.getName());
             resourceSet.add(new Resource(ResourceType.NETWORK, stack.getName(), stack));
             resourceSet.add(new Resource(ResourceType.NETWORK_INTERFACE, stack.getName(), stack));
@@ -87,12 +93,12 @@ public class GccProvisioner implements Provisioner {
                     resourceSet.add(new Resource(ResourceType.ROUTE, String.format("route-%s", vm.getResourceName()), stack));
                 }
 
-            }
+            }*/
         } catch (Exception e) {
             throw new BuildStackFailureException(e.getMessage(), e, resourceSet);
         }
-        LOGGER.info("Publishing {} event [StackId: '{}']", ReactorConfig.PROVISION_COMPLETE_EVENT, stack.getId());
-        reactor.notify(ReactorConfig.PROVISION_COMPLETE_EVENT, Event.wrap(new ProvisionComplete(CloudPlatform.GCC, stack.getId(), resourceSet)));
+        //LOGGER.info("Publishing {} event [StackId: '{}']", ReactorConfig.PROVISION_COMPLETE_EVENT, stack.getId());
+        //reactor.notify(ReactorConfig.PROVISION_COMPLETE_EVENT, Event.wrap(new ProvisionComplete(CloudPlatform.GCC, stack.getId(), resourceSet)));*/
     }
 
     @Override
