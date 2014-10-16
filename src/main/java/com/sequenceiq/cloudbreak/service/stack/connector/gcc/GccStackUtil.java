@@ -6,7 +6,6 @@ import java.io.StringReader;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.Security;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -53,9 +52,12 @@ import com.google.api.services.dns.model.ManagedZonesListResponse;
 import com.google.api.services.dns.model.ResourceRecordSet;
 import com.google.api.services.manager.Manager;
 import com.google.api.services.manager.ManagerScopes;
+import com.google.api.services.manager.model.Action;
+import com.google.api.services.manager.model.AllowedRule;
 import com.google.api.services.manager.model.Deployment;
-import com.google.api.services.manager.model.DiskAttachment;
+import com.google.api.services.manager.model.FirewallModule;
 import com.google.api.services.manager.model.Module;
+import com.google.api.services.manager.model.NetworkModule;
 import com.google.api.services.manager.model.NewDisk;
 import com.google.api.services.manager.model.NewDiskInitializeParams;
 import com.google.api.services.manager.model.ReplicaPoolModule;
@@ -277,7 +279,13 @@ public class GccStackUtil {
         GccCredential credential = (GccCredential) stack.getCredential();
         com.google.api.services.manager.model.Template template = new com.google.api.services.manager.model.Template();
         template.setName(stack.getName());
+        Map<String, Action> stringActionMap = new HashMap<>();
+        Action commandAction = new Action();
+        commandAction.setCommands(Arrays.asList(userData));
+        stringActionMap.put("commands", commandAction);
+        template.setActions(stringActionMap);
         Map<String, Module> modules = new HashMap<>();
+
         Module module1 = new Module();
         module1.setType("REPLICA_POOL");
         ReplicaPoolModule replicaPoolModule = new ReplicaPoolModule();
@@ -291,32 +299,42 @@ public class GccStackUtil {
         NewDiskInitializeParams newDiskInitializeParams = new NewDiskInitializeParams();
         newDiskInitializeParams.setDiskSizeGb(size.longValue());
         newDiskInitializeParams.setDiskType("pd-standard");
-        newDiskInitializeParams.setSourceImage(GccImageType.DEBIAN_HACK.getAmbariUbuntu(credential.getProjectId()));
+        newDiskInitializeParams.setSourceImage(GccImageType.DEBIAN_HACK.getUrl(credential.getProjectId()));
         newDisk.setInitializeParams(newDiskInitializeParams);
-
-
         replicaPoolParamsV1Beta1.setDisksToCreate(Arrays.asList(newDisk));
         replicaPoolParamsV1Beta1.setZone(gccTemplate.getGccZone().getValue());
         replicaPoolParamsV1Beta1.setBaseInstanceName(stack.getName());
         replicaPoolParamsV1Beta1.setMachineType(gccTemplate.getGccInstanceType().getValue());
-       /* Metadata.SimpleEntry<String, String> item1 = new Metadata.SimpleEntry<String, String>().;
-        item1.se("sshKeys");
-        item1.setValue("ubuntu:" + credential.getPublicKey());
-
-        Metadata.Items item2 = new Metadata.Items();
-        item2.setKey("startup-script");
-        item2.setValue(userData);
-
-        Metadata metadata = new Metadata();
-        metadata.setItems(Lists.<Metadata.Items>newArrayList());
-        metadata.getItems().add(item1);
-        metadata.getItems().add(item2);
-        replicaPoolParamsV1Beta1.setMetadata(metadata);*/
         replicaPoolParamsV1Beta1.setNetworkInterfaces(buildManagerNetworkInterfaces(compute, credential.getProjectId(), stack.getName()));
         replicaPoolParams.setV1beta1(replicaPoolParamsV1Beta1);
         replicaPoolModule.setReplicaPoolParams(replicaPoolParams);
         module1.setReplicaPoolModule(replicaPoolModule);
-        modules.put("sequenceiq", module1);
+
+        Module module3 = new Module();
+        module3.setType("NETWORK");
+        NetworkModule networkModule = new NetworkModule();
+        networkModule.setIPv4Range("10.0.0.0/24");
+        module3.setNetworkModule(networkModule);
+
+        Module module2 = new Module();
+        module2.setType("FIREWALL");
+        FirewallModule firewallModule = new FirewallModule();
+        firewallModule.setNetwork(stack.getName());
+        firewallModule.setSourceRanges(ImmutableList.of("0.0.0.0/0"));
+        AllowedRule allowedRule1 = new AllowedRule();
+        allowedRule1.setIPProtocol("tcp");
+        allowedRule1.setPorts(ImmutableList.of("1-65535"));
+        AllowedRule allowedRule2 = new AllowedRule();
+        allowedRule2.setIPProtocol("icmp");
+        AllowedRule allowedRule3 = new AllowedRule();
+        allowedRule3.setIPProtocol("udp");
+        allowedRule3.setPorts(ImmutableList.of("1-65535"));
+        firewallModule.setAllowed(Arrays.asList(allowedRule1, allowedRule2, allowedRule3));
+        module2.setFirewallModule(firewallModule);
+
+        modules.put("module1", module1);
+        modules.put("module2", module2);
+        modules.put(stack.getName(), module3);
         template.setModules(modules);
 
         Manager.Templates.Insert insert = manager.templates().insert(credential.getProjectId(), template);
@@ -473,7 +491,9 @@ public class GccStackUtil {
    //        buildFireWallOut(compute, projectId, name);
   //      buildFireWallIn(compute, projectId, name);
         List<com.google.api.services.manager.model.NetworkInterface> networkInterfaces = new ArrayList<>();
+
         networkInterfaces.add(buildManagerNetworkInterface(projectId, name));
+
         return networkInterfaces;
     }
 
@@ -599,7 +619,7 @@ public class GccStackUtil {
         disk.setSizeGb(size.longValue());
         disk.setName(name);
         Compute.Disks.Insert insDisk = compute.disks().insert(projectId, zone.getValue(), disk);
-        insDisk.setSourceImage(GccImageType.DEBIAN_HACK.getAmbariUbuntu(projectId));
+        insDisk.setSourceImage(GccImageType.DEBIAN_HACK.getUrl(projectId));
         insDisk.execute();
         GccDiskReadyPollerObject gccDiskReady = new GccDiskReadyPollerObject(compute, stack, name);
         gccDiskReadyPollerObjectPollingService.pollWithTimeout(gccDiskCheckerStatus, gccDiskReady, POLLING_INTERVAL, MAX_POLLING_ATTEMPTS);

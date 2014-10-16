@@ -28,7 +28,7 @@ public enum GccImageType {
         return imageName;
     }
 
-    public String getAmbariUbuntu(String projectId) {
+    public String getUrl(String projectId) {
         return String.format(DEBIAN_HACK.getValue(), projectId);
     }
 }
