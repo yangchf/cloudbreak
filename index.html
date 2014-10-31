@@ -351,7 +351,9 @@ You can do this on the management console, or - if you have aws-cli configured -
 <h4 id="create-iam-role-on-the-console">Create IAM role on the console</h4>
 <ol>
 <li>Log in to the AWS management console with the user account you'd like to use with Cloudbreak</li>
-<li>Go to IAM and select Roles</li>
+<li>Go to IAM, select "Roles", click Create New Role</li>
+<li>Give your role a name.</li>
+<li>Setup your role access:</li>
 <li>
 <p>Select Role for Cross-Account access</p>
 <ul>
@@ -368,6 +370,7 @@ You can do this on the management console, or - if you have aws-cli configured -
 <h4 id="create-iam-role-with-the-create-script">Create IAM role with the create script</h4>
 <ol>
 <li>Download the contents of <a href="https://github.com/sequenceiq/cloudbreak/tree/master/docs/aws">this folder</a> in a directory.</li>
+<li>Make sure you have the <a href="http://aws.amazon.com/cli/">AWS CLI</a> installed and on your path.</li>
 <li>Enter the directory</li>
 <li>Run <code>./create-iam-role</code></li>
 <li>Copy the resulting role ARN</li>
