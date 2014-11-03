@@ -303,22 +303,22 @@ Serf uses an efficient gossip protocol to solve three major problems:</p>
 <ol>
 <li>Simple single node - Apache Ambari blueprint</li>
 </ol>
-<p>This is a simple <a href="https://raw.githubusercontent.com/sequenceiq/ambari-rest-client/master/src/main/resources/blueprints/single-node-hdfs-yarn">Blueprint</a> which allows you to launch a single node, pseudo-distributed Hadoop Cluster in the cloud.</p>
+<p>This is a simple <a href="https://raw.githubusercontent.com/sequenceiq/ambari-rest-client/1.6.0/src/main/resources/blueprints/single-node-hdfs-yarn">Blueprint</a> which allows you to launch a single node, pseudo-distributed Hadoop Cluster in the cloud.</p>
 <p>It allows you to use the following services: HDFS, YARN, MAPREDUCE2.</p>
 <ol>
 <li>Full stack single node - HDP 2.1 blueprint</li>
 </ol>
-<p>This is a complex <a href="https://raw.githubusercontent.com/sequenceiq/ambari-rest-client/master/src/main/resources/blueprints/hdp-singlenode-default">Blueprint</a> which allows you to launch a single node, pseudo-distributed Hadoop Cluster in the cloud.</p>
+<p>This is a complex <a href="https://raw.githubusercontent.com/sequenceiq/ambari-rest-client/1.6.0/src/main/resources/blueprints/hdp-singlenode-default">Blueprint</a> which allows you to launch a single node, pseudo-distributed Hadoop Cluster in the cloud.</p>
 <p>It allows you to use the following services: HDFS, YARN, MAPREDUCE2, GANGLIA, HBASE, HIVE, HCATALOG, WEBHCAT, NAGIOS, OOZIE, PIG, SQOOP, STORM, TEZ, FALCON, ZOOKEEPER.</p>
 <ol>
 <li>Simple multi node - Apache Ambari blueprint</li>
 </ol>
-<p>This is a simple <a href="https://raw.githubusercontent.com/sequenceiq/ambari-rest-client/master/src/main/resources/blueprints/multi-node-hdfs-yarn">Blueprint</a> which allows you to launch a multi node, fully distributed Hadoop Cluster in the cloud.</p>
+<p>This is a simple <a href="https://raw.githubusercontent.com/sequenceiq/ambari-rest-client/1.6.0/src/main/resources/blueprints/multi-node-hdfs-yarn">Blueprint</a> which allows you to launch a multi node, fully distributed Hadoop Cluster in the cloud.</p>
 <p>It allows you to use the following services: HDFS, YARN, MAPREDUCE2.</p>
 <ol>
 <li>Full stack multi node - HDP 2.1 blueprint</li>
 </ol>
-<p>This is a complex <a href="https://raw.githubusercontent.com/sequenceiq/ambari-rest-client/master/src/main/resources/blueprints/hdp-multinode-default">Blueprint</a> which allows you to launch a multi node, fully distributed Hadoop Cluster in the cloud.</p>
+<p>This is a complex <a href="https://raw.githubusercontent.com/sequenceiq/ambari-rest-client/1.6.0/src/main/resources/blueprints/hdp-multinode-default">Blueprint</a> which allows you to launch a multi node, fully distributed Hadoop Cluster in the cloud.</p>
 <p>It allows you to use the following services: HDFS, YARN, MAPREDUCE2, GANGLIA, HBASE, HIVE, HCATALOG, WEBHCAT, NAGIOS, OOZIE, PIG, SQOOP, STORM, TEZ, FALCON, ZOOKEEPER.</p>
 <ol>
 <li>Custom blueprints</li>
@@ -407,9 +407,9 @@ Create a <code>Service account</code> and <code>Generate a new P12 key</code>. O
 <li>Google Compute Engine</li>
 <li>Google Compute Engine Instance Group Manager API</li>
 <li>Google Compute Engine Instance Groups API</li>
-<li>BigQuery API </li>
-<li>Google Cloud Deployment Manager API </li>
-<li>Google Cloud DNS API </li>
+<li>BigQuery API</li>
+<li>Google Cloud Deployment Manager API</li>
+<li>Google Cloud DNS API</li>
 <li>Google Cloud SQL</li>
 <li>Google Cloud Storage</li>
 <li>Google Cloud Storage JSON API</li>
@@ -438,17 +438,17 @@ Create a <code>Service account</code> and <code>Generate a new P12 key</code>. O
 <h3 id="cloudbreak-deployer">Cloudbreak deployer</h3>
 <p>This is the <code>master</code> role - the user which is created during the deployment process will have this role.</p>
 <h3 id="account-admin">Account admin</h3>
-<p>We have introduced the notion of accounts - and with that comes an administrator role. Upon registration a user will become an account administrator. </p>
+<p>We have introduced the notion of accounts - and with that comes an administrator role. Upon registration a user will become an account administrator.</p>
 <p>The extra rights associated with the account admin role are:</p>
 <ul>
 <li>Invite users to join the account</li>
 <li>Share account wide resources (credential, blueprints, templates)</li>
 <li>See resources created by account users</li>
 <li>Monitor clusters started by account users</li>
-<li>Management and reporting tool available </li>
+<li>Management and reporting tool available</li>
 </ul>
 <h3 id="account-user">Account user</h3>
-<p>An account user is a user who has been invited to join Cloudbreak by an account administrator. Account users activity will show up in the management and reporting tool for account wide statistics - accessible by the account administrator. Apart from common account wide resources, the account users can manage their own private resources. </p>
+<p>An account user is a user who has been invited to join Cloudbreak by an account administrator. Account users activity will show up in the management and reporting tool for account wide statistics - accessible by the account administrator. Apart from common account wide resources, the account users can manage their own private resources.</p>
 <!--ui.md-->
 
 <h2 id="cloudbreak-ui">Cloudbreak UI</h2>
@@ -457,7 +457,7 @@ The goal of the UI is to ease to process and allow you to create a Hadoop cluste
 <p><img alt="" src="https://raw.githubusercontent.com/sequenceiq/cloudbreak/master/docs/images/UI-screenshot.png" /></p>
 <p>The UI is built on the foundation of the Cloudbreak REST API. You can access the UI <a href="https://cloudbreak.sequenceiq.com/">here</a>.</p>
 <h3 id="user-registration">User registration</h3>
-<p>While we consider the registration process quite simple, we'd like to explain the notion of <strong>companies</strong>. When a user registers as a <code>company admin</code> it means that he will be the administrator of that company - further colleagues will have the opportunity to join the <strong>company</strong> upon being invited by the admin user. </p>
+<p>While we consider the registration process quite simple, we'd like to explain the notion of <strong>companies</strong>. When a user registers as a <code>company admin</code> it means that he will be the administrator of that company - further colleagues will have the opportunity to join the <strong>company</strong> upon being invited by the admin user.</p>
 <h3 id="manage-credentials">Manage credentials</h3>
 <p>Using manage credentials you can link your cloud account with the Cloudbreak account.</p>
 <p><strong>Amazon AWS</strong></p>
@@ -477,7 +477,7 @@ The goal of the UI is to ease to process and allow you to create a Hadoop cluste
 <p><code>Project Id:</code> your GCC Project id - see Accounts</p>
 <p><code>Service Account Id:</code> your GCC service account mail address - see Accounts</p>
 <p><code>Service Account private key:</code> your GCC service account generated private key - see Accounts</p>
-<p><code>SSH public key:</code> the SSH public key in OpenSSH format that's private keypair can be used to log into the launched instances later </p>
+<p><code>SSH public key:</code> the SSH public key in OpenSSH format that's private keypair can be used to log into the launched instances later</p>
 <h3 id="manage-templates">Manage templates</h3>
 <p>Using manage templates you can create infrastructure templates.</p>
 <p><strong>Amazon AWS</strong></p>
@@ -511,7 +511,7 @@ The goal of the UI is to ease to process and allow you to create a Hadoop cluste
 <p>Blueprints are your declarative definition of a Hadoop cluster.</p>
 <p><code>Name:</code> name of your blueprint</p>
 <p><code>Description:</code> short description of your blueprint</p>
-<p><code>Source URL:</code> you can add a blueprint by pointing to a URL. As an example you can use this <a href="https://raw.githubusercontent.com/sequenceiq/ambari-rest-client/master/src/main/resources/blueprints/multi-node-hdfs-yarn">blueprint</a>.</p>
+<p><code>Source URL:</code> you can add a blueprint by pointing to a URL. As an example you can use this <a href="https://github.com/sequenceiq/ambari-rest-client/raw/1.6.0/src/main/resources/blueprints/multi-node-hdfs-yarn">blueprint</a>.</p>
 <p><code>Manual copy:</code> you can copy paste your blueprint in this text area</p>
 <p><em>Note: Apache Ambari community and SequenceIQ is working on an auto-hostgroup assignment algorithm; in the meantime please follow our conventions and check the default blueprints as examples, or ask us to support you.</em></p>
 <p><em>1. When you are creating a Single node blueprint the name of the default host group has to be <code>master</code>.</em>
