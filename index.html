@@ -398,9 +398,7 @@ Additionally when you are creating Templates you can specify a <code>password</c
 <p><em>3. Create a VM image from the copied VHD blob.</em></p>
 <p><em>This process will take 20 minutes so be patient - but this step will have do be done once and only once.</em></p>
 <h3 id="configuring-the-google-cloud-account">Configuring the Google Cloud account</h3>
-<p>Follow the <a href="https://cloud.google.com/storage/docs/authentication#service_accounts">instructions</a> fro, Google.
-Create a <code>Service account</code> and <code>Generate a new P12 key</code>. Once you have downloaded the key use <code>openssl</code> to convert it to PEM.</p>
-<p><code>openssl pkcs12 -in path/to/key.p12 -nodes -nocerts &gt; path/to/key.pem</code></p>
+<p>Follow the <a href="https://cloud.google.com/storage/docs/authentication#service_accounts">instructions</a> in Google Cloud's documentation to create a <code>Service account</code> and <code>Generate a new P12 key</code>.</p>
 <p>Make sure that at API level (<strong>APIs and auth</strong> menu) you have enabled:</p>
 <ul>
 <li>Google Compute Engine</li>
@@ -413,18 +411,7 @@ Create a <code>Service account</code> and <code>Generate a new P12 key</code>. O
 <li>Google Cloud Storage</li>
 <li>Google Cloud Storage JSON API</li>
 </ul>
-<p>After that you are ready to test whether the account is configured OK. get this tester JAR file.</p>
-<pre class="prettyprint well"><code>curl -LO https://github.com/sequenceiq/gcc-credential-tester/releases/download/1.0/gcc-credential-tester.jar
-</code></pre>
-
-<p>Once you have downloaded you are ready to test:</p>
-<pre class="prettyprint well"><code>java -jar gcc-credential-tester.jar &lt;keyPEMFile&gt; &lt;serviceAccountEmailAddress&gt; &lt;projectId&gt;
-</code></pre>
-
-<p>The expected result should be something like this:</p>
-<pre class="prettyprint well"><code>Your credential is ok...
-</code></pre>
-
+<p>When creating GCC credentials in Cloudbreak you will have to provide the email address of the Service Account and the project ID (from Google Developers Console - Projects) where the service account is created. You'll also have to upload the generated P12 file and provide an OpenSSH formatted public key that will be used as an SSH key.</p>
 <!--accounts.md-->
 
 <h2 id="roles">Roles</h2>
