@@ -135,6 +135,7 @@ EOF
 }
 
 main() {
+  docker pull sequenceiq/ambari:consul
   if [[ "$1" == "::" ]]; then
     shift
     eval "$@"
