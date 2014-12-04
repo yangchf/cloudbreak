@@ -113,7 +113,7 @@
 
 <h2 id="overview">Overview</h2>
 <p>Cloudbreak is a RESTful Hadoop as a Service API. Once it is deployed in your favourite servlet container exposes a REST API allowing to span up Hadoop clusters of arbitrary sizes on your selected cloud provider. Provisioning Hadoop has never been easier.
-Cloudbreak is built on the foundation of cloud providers API (Amazon AWS, Microsoft Azure, Google Cloud Compute...), Apache Ambari, Docker containers, Serf and dnsmasq.</p>
+Cloudbreak is built on the foundation of cloud providers API (Amazon AWS, Microsoft Azure, Google Cloud Platform...), Apache Ambari, Docker containers, Serf and dnsmasq.</p>
 <h2 id="benefits">Benefits</h2>
 <h3 id="secure">Secure</h3>
 <p>Supports basic, token based and OAuth2 authentication model. The cluster is provisioned in a logically isolated network (Virtual Private Cloud) of your favourite cloud provider.
@@ -411,7 +411,7 @@ Additionally when you are creating Templates you can specify a <code>password</c
 <li>Google Cloud Storage</li>
 <li>Google Cloud Storage JSON API</li>
 </ul>
-<p>When creating GCC credentials in Cloudbreak you will have to provide the email address of the Service Account and the project ID (from Google Developers Console - Projects) where the service account is created. You'll also have to upload the generated P12 file and provide an OpenSSH formatted public key that will be used as an SSH key.</p>
+<p>When creating GCP credentials in Cloudbreak you will have to provide the email address of the Service Account and the project ID (from Google Developers Console - Projects) where the service account is created. You'll also have to upload the generated P12 file and provide an OpenSSH formatted public key that will be used as an SSH key.</p>
 <!--accounts.md-->
 
 <h2 id="roles">Roles</h2>
@@ -457,12 +457,12 @@ The goal of the UI is to ease to process and allow you to create a Hadoop cluste
 <p><code>Subscription Id:</code> your Azure subscription id - see Accounts</p>
 <p><code>File password:</code> your generated JKS file password - see Accounts</p>
 <p><code>SSH public key:</code> the SSH public key in OpenSSH format that's private keypair can be used to log into the launched instances later (The key generation process is described in the Configuring the Microsoft Azure account section)</p>
-<p><strong>Google Cloud</strong></p>
+<p><strong>Google Cloud Platform</strong></p>
 <p><code>Name:</code> name of your credential</p>
 <p><code>Description:</code> short description of your linked credential</p>
-<p><code>Project Id:</code> your GCC Project id - see Accounts</p>
-<p><code>Service Account Id:</code> your GCC service account mail address - see Accounts</p>
-<p><code>Service Account private key:</code> your GCC service account generated private key - see Accounts</p>
+<p><code>Project Id:</code> your GCP Project id - see Accounts</p>
+<p><code>Service Account Id:</code> your GCP service account mail address - see Accounts</p>
+<p><code>Service Account private key:</code> your GCP service account generated private key - see Accounts</p>
 <p><code>SSH public key:</code> the SSH public key in OpenSSH format that's private keypair can be used to log into the launched instances later</p>
 <h3 id="manage-templates">Manage templates</h3>
 <p>Using manage templates you can create infrastructure templates.</p>
@@ -485,7 +485,7 @@ The goal of the UI is to ease to process and allow you to create a Hadoop cluste
 <p><code>Instance type:</code> the Azure instance type to be used - we suggest to use at least small or medium instances</p>
 <p><code>Attached volumes per instance:</code> the number of disks to be attached</p>
 <p><code>Volume size (GB):</code> the size of the attached disks (in GB)</p>
-<p><strong>Google Cloud</strong></p>
+<p><strong>Google Cloud Platform</strong></p>
 <p><code>Name:</code> name of your template</p>
 <p><code>Description:</code> short description of your template</p>
 <p><code>Location:</code> Google Cloud datacenter location where you'd like to launch your cluster</p>
@@ -730,7 +730,7 @@ dnsmasq - 2.7</p>
 <p>In the meantime we have started an internal R&amp;D project to bring Cloudera's CDH distribution under Apache Ambari - in case you would like to collaborate in this task with us or it sounds interesting to you, don't hesitate to contact us.</p>
 <p>Apache Ambari allows you to create your own <a href="https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=38571133">custom Hadoop stack</a> - and you can use Cloudbreak to provision a cluster based on that.</p>
 <h4 id="cloud-providers">Cloud providers</h4>
-<p>While we have just released the first public beta version of Cloudbreak, we have already started working on other cloud providers - namely Google Cloud Compute and Digital Ocean.
+<p>While we have just released the first public beta version of Cloudbreak, we have already started working on other cloud providers - namely Google Cloud Platform and Digital Ocean.
 We have received many requests from people to integrate Cloudbreak with 3d party hypervisors and cloud providers - as IBM's SoftLayer. In case you'd like to have your favourite cloud provider listed don't hesitate to contact us or use our SDK and process to add yours. You can fill the following <a href="https://docs.google.com/forms/d/129RVh6VfjRsuuHOcS3VPbFYTdM2SEjANDsGCR5Pul0I/viewform">questionnaire</a> and request your favourite cloud provider.</p>
 <p>Enjoy Cloudbreak - the Hadoop as a Service API which brings you a Hadoop ecosystem in minutes. You are literaly one click or REST call away from a fully functional, distributed Hadoop cluster.</p>
 <!--releases.md-->
