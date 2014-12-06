@@ -376,23 +376,22 @@ You can do this on the management console, or - if you have aws-cli configured -
 </ol>
 <p>Once this is configured, Cloudbreak is ready to launch Hadoop clusters on your behalf. The only thing Cloudbreak requires is the <code>Role ARN</code> (Role for Cross-Account access).</p>
 <h3 id="configuring-the-microsoft-azure-account">Configuring the Microsoft Azure account</h3>
-<p>In order to launch Hadoop clusters on the  Microsoft Azure cloud platform you'll need to link your Azure account with Cloudbreak. For this, you'll need an X509 certificate with a 2048-bit RSA keypair.</p>
+<p>In order to launch Hadoop clusters on the  Microsoft Azure cloud platform you'll need to link your Azure account with Cloudbreak. This can be achieved by creating a new <code>Azure Credential</code> in Cloudbreak.</p>
+<p>You'll need an X509 certificate with a 2048-bit RSA keypair.</p>
 <p>Generate these artifacts with <code>openssl</code> by running the following command, and answering the questions in the command prompt:</p>
 <pre class="prettyprint well"><code>openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout my_azure_private.key -out my_azure_cert.pem
 </code></pre>
 
-<p>The command generates the following files into the directory you ran the command:</p>
-<p><code>my_azure_private.key</code></p>
-<p><code>my_azure_cert.pem</code></p>
-<p>Fill the form by providing your Azure <code>Subscription Id</code>, a file password and the content of the previously generated certificate (my_azure_cert.pem).</p>
-<p>Cloudbreak generate a <code>JKS</code> file and a <code>certificate</code> for you with the <code>passphrase</code>.
-You will need to upload the generated certificate (that is automatically downloaded to you after the form submission) to your Azure account:</p>
-<p>On your <code>Azure Management Console</code> go to the <code>Settings</code> menu, click the <code>Management Certificates</code> tab and upload the downloaded <code>cert</code> file</p>
-<p>The JKS file and certificate (uploaded) will be used to encrypt the communication between Cloudbreak and Azure in both directions.
-Additionally when you are creating Templates you can specify a <code>password</code> or an <code>SSH public key</code> in order for you to be able to login in the launched instances. As you can see the communication in Cloudbreak for both directions is secure, and it's not possible for others to login into your instances.</p>
+<p>The command generates the following files into the directory you ran the command from:</p>
+<p><code>my_azure_private.key</code> and <code>my_azure_cert.pem</code></p>
+<p>(obviously artifacts can be named after your wish)</p>
+<p>Fill the form by providing your Azure <code>Subscription Id</code>, a file password and the <strong>content</strong> of the previously generated certificate (my_azure_cert.pem).</p>
+<p><em>Note:</em> Cloudbreak will generate a <code>JKS</code> file (stored by the backend) and a <code>certificate</code> with the <code>passphrase</code>. You will need to upload the generated certificate (that is automatically downloaded to you after the form submission, alternatively you can download it any time from Cloudbreak) to your Azure account:</p>
+<p>On your <code>Azure Management Console</code>, <code>Settings</code> menu, click the <code>Management Certificates</code> tab and upload the downloaded <code>cert</code> file</p>
+<p>The JKS file and certificate will be used to encrypt the communication between Cloudbreak and Azure in both directions.</p>
 <p>You are done - from now on Cloudbreak can launch Azure instances on your behalf.</p>
-<p><em>Note1: Cloudbreak does not store any login details into these instances - when you are creating Templates you can specify a <code>password</code> or <code>SSH Public key</code> which you can use to login into the launched instances.</em></p>
-<p><em>Note2: Because Azure does not directly support third party public images we will have to copy the used image from VM Depot into your storage account. The steps below need to be finished ONCE and only ONCE before any stack is created for every affinity group - <strong>this is an automated step</strong> - we have just highlighted in order to point out the first time slowness:</em></p>
+<p><em>Note:</em> Cloudbreak does not store any login details for these instances - when you create <strong>Templates</strong> you can specify a <code>password</code> or <code>SSH Public key</code> that can be used to login into the launched instances.</p>
+<p><em>Note:</em> Because Azure does not directly support third party public images Cloudbreak will copy the used image from VM Depot into your storage account. The steps below need to be finished ONCE and only ONCE before any stack is created for every affinity group - <strong>this is an automated step</strong>  - it's only highlighted here as an explanation of why it takes longer for the first time:</p>
 <p><em>1. Get the VM image - http://vmdepot.msopentech.com/Vhd/Show?vhdId=42480&amp;version=43564</em></p>
 <p><em>2. Copy the VHD blob from above (community images) into your storage account</em></p>
 <p><em>3. Create a VM image from the copied VHD blob.</em></p>
