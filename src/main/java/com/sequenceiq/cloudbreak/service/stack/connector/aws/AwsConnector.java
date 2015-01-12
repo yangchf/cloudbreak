@@ -38,6 +38,7 @@ import com.amazonaws.services.ec2.model.TerminateInstancesRequest;
 import com.google.common.collect.Lists;
 import com.sequenceiq.cloudbreak.conf.ReactorConfig;
 import com.sequenceiq.cloudbreak.domain.AwsCredential;
+import com.sequenceiq.cloudbreak.domain.AwsTemplate;
 import com.sequenceiq.cloudbreak.domain.CloudPlatform;
 import com.sequenceiq.cloudbreak.domain.Cluster;
 import com.sequenceiq.cloudbreak.domain.Credential;
@@ -177,7 +178,8 @@ public class AwsConnector implements CloudPlatformConnector {
         ));
         CreateStackRequest createStackRequest = createStackRequest()
                 .withStackName(stackName)
-                .withTemplateBody(cfTemplateBuilder.build("templates/aws-cf-stack.ftl", false, stack.getTemplateSetAsList()))
+                .withTemplateBody(cfTemplateBuilder.build("templates/aws-cf-stack.ftl",
+                        spotPriceNeeded(stack.getTemplateGroups()), stack.getTemplateSetAsList()))
                 .withNotificationARNs((String) setupProperties.get(SnsTopicManager.NOTIFICATION_TOPIC_ARN_KEY))
                 .withParameters(parameters);
         client.createStack(createStackRequest);
@@ -187,6 +189,18 @@ public class AwsConnector implements CloudPlatformConnector {
         resources.add(new Resource(ResourceType.CLOUDFORMATION_STACK, stackName, stack,  Lists.newArrayList(stack.getTemplateGroups()).get(0).getGroupName()));
         Stack updatedStack = stackUpdater.updateStackResources(stack.getId(), resources);
         LOGGER.info("CloudFormation stack creation request sent with stack name: '{}' for stack: '{}'", stackName, updatedStack.getId());
+    }
+
+
+    private boolean spotPriceNeeded(Set<TemplateGroup> templateGroups) {
+        boolean spotPrice = true;
+        for (TemplateGroup templateGroup : templateGroups) {
+            AwsTemplate awsTemplate = (AwsTemplate) templateGroup.getTemplate();
+            if(awsTemplate.getSpotPrice() == null) {
+                spotPrice = false;
+            }
+        }
+        return spotPrice;
     }
 
     private Map<String, String> prepareAmis() {
