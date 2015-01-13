@@ -148,7 +148,7 @@ As an example, for Amazon EC2, we use <a href="http://aws.amazon.com/cloudformat
 <p>For further information please visit our <a href="http://docs.cloudbreak.apiary.io/#stacks">API documentation</a>.</p>
 <h3 id="blueprints">Blueprints</h3>
 <p>Ambari Blueprints are a declarative definition of a Hadoop cluster. With a Blueprint, you specify a stack, the component layout and the configurations to materialise a Hadoop cluster instance. Hostgroups defined in blueprints can be associated to different VPC subnets and availability zones, thus you can span up a highly available cluster running on different datacenters or availability zones.
-We have a few default blueprints available from single node to multi node blueprints and lambda architecture.</p>
+We have a few default blueprints available from multi node blueprints to lambda architectures.</p>
 <p>For further information please visit our <a href="http://docs.cloudbreak.apiary.io/#blueprints">API documentation</a>.</p>
 <h3 id="cluster">Cluster</h3>
 <p>Clusters are materialised Hadoop clusters. They are built based on a Blueprint (running the components and services specified) and on a configured infrastructure Stack.
@@ -303,16 +303,6 @@ Serf uses an efficient gossip protocol to solve three major problems:</p>
 <p><em>Note: You can run Apache Spark on a cluster provisioned with Cloudbreak by using the <code>multi-node-hdfs-yarn</code> blueprint, and use Spark in <a href="https://spark.apache.org/docs/latest/running-on-yarn.html">yarn-mode</a>.</em></p>
 <p>We provide a list of default Hadoop cluster Blueprints for your convenience, however you can always build and use your own Blueprint.</p>
 <ol>
-<li>Simple single node - Apache Ambari blueprint</li>
-</ol>
-<p>This is a simple <a href="https://raw.githubusercontent.com/sequenceiq/ambari-rest-client/1.6.0/src/main/resources/blueprints/single-node-hdfs-yarn">Blueprint</a> which allows you to launch a single node, pseudo-distributed Hadoop Cluster in the cloud.</p>
-<p>It allows you to use the following services: HDFS, YARN, MAPREDUCE2.</p>
-<ol>
-<li>Full stack single node - HDP 2.1 blueprint</li>
-</ol>
-<p>This is a complex <a href="https://raw.githubusercontent.com/sequenceiq/ambari-rest-client/1.6.0/src/main/resources/blueprints/hdp-singlenode-default">Blueprint</a> which allows you to launch a single node, pseudo-distributed Hadoop Cluster in the cloud.</p>
-<p>It allows you to use the following services: HDFS, YARN, MAPREDUCE2, GANGLIA, HBASE, HIVE, HCATALOG, WEBHCAT, NAGIOS, OOZIE, PIG, SQOOP, STORM, TEZ, FALCON, ZOOKEEPER.</p>
-<ol>
 <li>Simple multi node - Apache Ambari blueprint</li>
 </ol>
 <p>This is a simple <a href="https://raw.githubusercontent.com/sequenceiq/ambari-rest-client/1.6.0/src/main/resources/blueprints/multi-node-hdfs-yarn">Blueprint</a> which allows you to launch a multi node, fully distributed Hadoop Cluster in the cloud.</p>
@@ -329,10 +319,7 @@ Serf uses an efficient gossip protocol to solve three major problems:</p>
 <p>When you are creating custom Blueprints you can use the components above to build Hadoop services and use them in your on-demand Hadoop cluster.</p>
 <p>We are trying to figure out the hosts to hostgroups assignments - and in order to do so you will need to follow the conventions below:</p>
 <p><em>Note: Apache Ambari community and SequenceIQ is working on an auto-hostgroup assignment algorithm; in the meantime please follow our conventions and check the default blueprints as examples, or ask us to support you.</em></p>
-<ol>
-<li>When you are creating a Single node blueprint, the name of the default host group has to be <code>master</code>.</li>
-<li>When you are creating a Multi node blueprint, all the worker node components (a.k.a. Slaves) will have to be grouped in host groups named <code>slave_*</code>. <em>Replace * with the number of Slave hostgroups</em>.</li>
-</ol>
+<p>When you are creating a Multi node blueprint, all the worker node components (a.k.a. Slaves) will have to be grouped in host groups named <code>slave_*</code>. <em>Replace * with the number of Slave hostgroups</em>.</p>
 <p>The default rule for multi node clusters is that there must be at least as many hosts as the number of host groups. Each NOT slave host groups (master, gateway, etc) will be launched with a cardinality of 1 (1 node per master, gateway, hosts, etc.), and all the rest of the nodes are equally distributed among Slave nodes (if there are multiple slave host groups).</p>
 <!--components.md-->
 
@@ -711,27 +698,28 @@ cd docker-cloudbreak
 <p>The first public beta version of Cloudbreak supports Hadoop on Amazon's EC2 and Microsoft's Azure cloud providers. The currently supported Hadoop is the Hortonworks Data Platform - the 100% open source Hadoop distribution.</p>
 <p>Versions:</p>
 <p>CentOS - 6.5
-Hortonworks Data Platform - 2.1
-Apache Hadoop - 2.4.0
-Apache Tez - 0.4
-Apache Pig - 0.12.1
-Apache Hive &amp; HCatalog - 0.13.0
-Apache HBase - 0.98.0
-Apache Phoenix - 4.0.0
-Apache Accumulo - 1.5.1
-Apache Storm - 0.9.1
-Apache Mahout - 0.9.0
-Apache Solr - 4.7.2
-Apache Falcon - 0.5.0
-Apache Sqoop - 1.4.4
-Apache Flume - 1.4.0
-Apache Ambari - 1.6.1
-Apache Oozie - 4.0.0
+Hortonworks Data Platform - 2.2
+Apache Hadoop - 2.6.0
+Apache Tez - 0.6
+Apache Pig - 0.14
+Apache Hive &amp; HCatalog - 0.14.0
+Apache HBase - 0.98.4
+Apache Phoenix - 4.2
+Apache Accumulo - 1.6.1
+Apache Storm - 0.9.3
+Apache Spark - 1.2.0
+Apache Slider - 0.5.1
+Apache Solr -  4.10.0
+Apache Kafka - 0.8.1
+Apache Falcon - 0.6.0
+Apache Sqoop - 1.4.5
+Apache Flume - 1.5.0
+Apache Ambari - 1.7.0
+Apache Oozie - 4.1.0
 Apache Zookeeper - 3.4.5
-Apache Knox - 0.4.0
-Docker - 1.1
-Serf - 0.5.0
-dnsmasq - 2.7</p>
+Apache Knox - 0.5.0
+Docker - 1.3
+Consul - 0.4.1</p>
 <h3 id="future-releases">Future releases</h3>
 <h4 id="hadoop-distributions">Hadoop distributions</h4>
 <p>There is an effort by the community and SequenceIQ to bring <a href="http://bigtop.apache.org/">Apache Bigtop</a> - the Apache Hadoop distribution - under the umbrella of Ambari. Once this effort is finished, Cloudbreak will support Apache Bigtop as a Hadoop distribution as well.</p>
