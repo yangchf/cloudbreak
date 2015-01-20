@@ -1,0 +1,41 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="AWS Full Test">
+    <parameter name="uaaUser" value="MUST BE SPECIFIED" />
+    <parameter name="uaaPassword" value="MUST BE SPECIFIED" />
+    <parameter name="roleArn" value="MUST BE SPECIFIED" />
+    <parameter name="publicKeyFile" value="MUST BE SPECIFIED" />
+    <parameter name="cloudbreakServer" value="http://localhost:8080" />
+    <parameter name="blueprintName" value="it-aws-multinode-hdfs-yarn" />
+    <parameter name="blueprintFile" value="classpath:/blueprint/multi-node-hdfs-yarn.bp" />
+    <parameter name="region" value="EU_WEST_1" />
+    <parameter name="stackName" value="aws-integrationtest" />
+    <parameter name="clusterName" value="aws-it-cluster" />
+    <test name="init">
+        <classes>
+            <class name="com.sequenceiq.it.TestSuiteInitializer" />
+            <class name="com.sequenceiq.it.cloudbreak.CloudbreakTestSuiteInitializer" />
+        </classes>
+    </test>
+    <test name="create">
+        <classes>
+            <class name="com.sequenceiq.it.cloudbreak.AwsCredentialCreationTest" />
+            <class name="com.sequenceiq.it.cloudbreak.BlueprintCreationTest" />
+            <class name="com.sequenceiq.it.cloudbreak.AwsTemplateCreationTest" />
+            <class name="com.sequenceiq.it.cloudbreak.StackCreationTest" />
+            <class name="com.sequenceiq.it.cloudbreak.ClusterCreationTest" />
+        </classes>
+    </test>
+    <test name="upscale">
+        <parameter name="scalingAdjustment" value="3" />
+        <classes>
+            <class name="com.sequenceiq.it.cloudbreak.ScalingTest" />
+        </classes>
+    </test>
+    <test name="downscale">
+        <parameter name="scalingAdjustment" value="-2" />
+        <classes>
+            <class name="com.sequenceiq.it.cloudbreak.ScalingTest" />
+        </classes>
+    </test>
+</suite>

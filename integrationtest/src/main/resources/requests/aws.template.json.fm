@@ -1,0 +1,14 @@
+{
+   "parameters":{
+      "sshLocation":"0.0.0.0/0",
+      "region":"${region}",
+      "instanceType":"${awsInstanceType}",
+      "volumeType":"${awsVolumeType}",
+      "amiId":"${awsAmiId}"
+   },
+   "name":"${awsTemplateName}",
+   "description":"Integration Test Template",
+   "volumeCount":${awsVolumeCount},
+   "volumeSize":${awsVolumeSize},
+   "cloudPlatform":"AWS"
+}

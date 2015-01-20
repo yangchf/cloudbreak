@@ -1,0 +1,42 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Gcp Full Test">
+    <parameter name="uaaUser" value="MUST BE SPECIFIED" />
+    <parameter name="uaaPassword" value="MUST BE SPECIFIED" />
+    <parameter name="projectId" value="MUST BE SPECIFIED" />
+    <parameter name="serviceAccountId" value="MUST BE SPECIFIED" />
+    <parameter name="serviceAccountPrivateKeyP12File" value="MUST BE SPECIFIED" />
+    <parameter name="publicKeyFile" value="MUST BE SPECIFIED" />
+    <parameter name="cloudbreakServer" value="http://localhost:8080" />
+    <parameter name="blueprintName" value="it-gcp-multinode-hdfs-yarn" />
+    <parameter name="blueprintFile" value="classpath:/blueprint/multi-node-hdfs-yarn.bp" />
+    <parameter name="stackName" value="gcp-integrationtest" />
+    <parameter name="clusterName" value="gcp-it-cluster" />
+    <test name="init">
+        <classes>
+            <class name="com.sequenceiq.it.TestSuiteInitializer" />
+            <class name="com.sequenceiq.it.cloudbreak.CloudbreakTestSuiteInitializer" />
+        </classes>
+    </test>
+    <test name="create">
+        <classes>
+            <class name="com.sequenceiq.it.cloudbreak.GccCredentialCreationTest" />
+            <class name="com.sequenceiq.it.cloudbreak.BlueprintCreationTest" />
+            <class name="com.sequenceiq.it.cloudbreak.GCCTemplateCreationTest" />
+            <class name="com.sequenceiq.it.cloudbreak.StackCreationTest" />
+            <class name="com.sequenceiq.it.cloudbreak.ClusterCreationTest" />
+        </classes>
+    </test>
+    <test name="upscale">
+        <parameter name="scalingAdjustment" value="3" />
+        <classes>
+            <class name="com.sequenceiq.it.cloudbreak.ScalingTest" />
+        </classes>
+    </test>
+    <test name="downscale">
+        <parameter name="scalingAdjustment" value="-2" />
+        <classes>
+            <class name="com.sequenceiq.it.cloudbreak.ScalingTest" />
+        </classes>
+    </test>
+</suite>

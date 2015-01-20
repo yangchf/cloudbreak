@@ -1,0 +1,12 @@
+{
+   "parameters":{
+      "gccInstanceType":"${gccInstanceType}",
+      "volumeType":"${volumeType}",
+      "gccImageType":"${gccImageType}"
+   },
+   "name":"${gccName}",
+   "description":"GCC template for integration testing",
+   "volumeCount":${volumeCount},
+   "volumeSize":${volumeSize},
+   "cloudPlatform":"GCC"
+}
