@@ -5,6 +5,7 @@ import com.sequenceiq.cloudbreak.domain.CloudbreakEvent;
 import com.sequenceiq.cloudbreak.domain.CloudbreakUsage;
 import com.sequenceiq.cloudbreak.domain.Cluster;
 import com.sequenceiq.cloudbreak.domain.Credential;
+import com.sequenceiq.cloudbreak.domain.InstanceMetaData;
 import com.sequenceiq.cloudbreak.domain.Stack;
 import com.sequenceiq.cloudbreak.domain.Template;
 import com.sequenceiq.cloudbreak.logger.resourcetype.BlueprintLoggerFactory;
@@ -13,6 +14,7 @@ import com.sequenceiq.cloudbreak.logger.resourcetype.ClusterLoggerFactory;
 import com.sequenceiq.cloudbreak.logger.resourcetype.CredentialLoggerFactory;
 import com.sequenceiq.cloudbreak.logger.resourcetype.EventDataLoggerFactory;
 import com.sequenceiq.cloudbreak.logger.resourcetype.EventLoggerFactory;
+import com.sequenceiq.cloudbreak.logger.resourcetype.InstanceMetaDataLoggerFactory;
 import com.sequenceiq.cloudbreak.logger.resourcetype.StackLoggerFactory;
 import com.sequenceiq.cloudbreak.logger.resourcetype.TemplateLoggerFactory;
 import com.sequenceiq.cloudbreak.logger.resourcetype.UsageLoggerFactory;
@@ -49,6 +51,8 @@ public class MDCBuilder {
             UsageLoggerFactory.buildMdcContext((CloudbreakUsage) object);
         } else if (object instanceof CloudbreakEventData) {
             EventDataLoggerFactory.buildMdcContext((CloudbreakEventData) object);
+        } else if (object instanceof InstanceMetaData) {
+            InstanceMetaDataLoggerFactory.buildMdcContext((InstanceMetaData) object);
         } else {
             throw new UnsupportedOperationException(String.format("%s class not supported for logging.", object.getClass()));
         }
