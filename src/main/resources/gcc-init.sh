@@ -154,9 +154,40 @@ format_disks() {
   /usr/local/disk_mount.sh
 }
 
+restart() {
+    if docker inspect ambari-server &> /dev/null ; then
+        update-docker-hosts ambari-agent ambari-server consul
+        restart-containers ambari-agent ambari-server consul
+        register_ambari
+        docker exec -d ambari-agent /start-agent
+        docker exec -d ambari-server /start-server
+    else
+        update-docker-hosts ambari-agent consul
+        restart-containers ambari-agent consul
+        docker exec -d ambari-agent /start-agent        
+    fi;
+}
+
+restart-containers() {
+   for var in "$@"
+   do
+     docker restart "$var"
+   done
+}
+
+update-docker-hosts() {
+   fix_hostname
+   local fixed_hosts=$(cat /etc/hosts)
+   for var in "$@"
+   do
+      docker exec "$var" bash -c "echo '$fixed_hosts' > /etc/hosts"
+   done
+}
+
 main() {
   if docker inspect ambari-agent &> /dev/null ; then
-    echo nothing to do;
+    echo restart...;
+    restart
   else
     if [[ "$1" == "::" ]]; then
         shift
