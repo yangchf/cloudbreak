@@ -24,7 +24,7 @@ import javax.persistence.Version;
 
 @Entity
 @Table(name = "Stack", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "account", "name" })
+        @UniqueConstraint(columnNames = {"account", "name"})
 })
 @NamedQueries({
         @NamedQuery(
@@ -32,6 +32,7 @@ import javax.persistence.Version;
                 query = "SELECT c FROM Stack c "
                         + "LEFT JOIN FETCH c.resources "
                         + "LEFT JOIN FETCH c.instanceGroups ig "
+                        + "LEFT JOIN FETCH c.allowedSubNets "
                         + "LEFT JOIN FETCH ig.instanceMetaData "
                         + "WHERE c.id= :id"),
         @NamedQuery(
@@ -189,6 +190,9 @@ public class Stack implements ProvisionEntity {
 
     @OneToMany(mappedBy = "stack", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<InstanceGroup> instanceGroups = new HashSet<>();
+
+    @OneToMany(mappedBy = "stack", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Subnet> allowedSubNets = new HashSet<>();
 
     public Set<InstanceGroup> getInstanceGroups() {
         return instanceGroups;
@@ -410,4 +414,11 @@ public class Stack implements ProvisionEntity {
         return credential.cloudPlatform();
     }
 
+    public Set<Subnet> getAllowedSubNets() {
+        return allowedSubNets;
+    }
+
+    public void setAllowedSubNets(Set<Subnet> allowedSubNets) {
+        this.allowedSubNets = allowedSubNets;
+    }
 }

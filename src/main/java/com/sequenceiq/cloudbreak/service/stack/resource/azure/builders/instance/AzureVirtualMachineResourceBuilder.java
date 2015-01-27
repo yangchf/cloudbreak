@@ -10,6 +10,7 @@ import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +31,7 @@ import com.sequenceiq.cloudbreak.domain.InstanceGroup;
 import com.sequenceiq.cloudbreak.domain.Resource;
 import com.sequenceiq.cloudbreak.domain.ResourceType;
 import com.sequenceiq.cloudbreak.domain.Stack;
+import com.sequenceiq.cloudbreak.domain.Subnet;
 import com.sequenceiq.cloudbreak.repository.StackRepository;
 import com.sequenceiq.cloudbreak.service.PollingService;
 import com.sequenceiq.cloudbreak.service.stack.connector.azure.AzureStackUtil;
@@ -50,6 +52,8 @@ import groovyx.net.http.HttpResponseException;
 @Component
 @Order(3)
 public class AzureVirtualMachineResourceBuilder extends AzureSimpleInstanceResourceBuilder {
+
+    private static final Rule DEFAULT_RULE = new Rule(Action.DENY.getText(), "0.0.0.0/0");
 
     @Autowired
     private StackRepository stackRepository;
@@ -94,19 +98,21 @@ public class AzureVirtualMachineResourceBuilder extends AzureSimpleInstanceResou
         byte[] encoded = Base64.encodeBase64(buildResources.get(0).getResourceName().getBytes());
         String label = new String(encoded);
         Map<String, Object> props = new HashMap<>();
+        List<Rule> aclRules = createACLRules(stack);
         List<Port> ports = new ArrayList<>();
-        ports.add(new Port("Ambari", "8080", "8080", "tcp"));
-        ports.add(new Port("Consul", "8500", "8500", "tcp"));
-        ports.add(new Port("NameNode", "50070", "50070", "tcp"));
-        ports.add(new Port("RM Web", "8088", "8088", "tcp"));
-        ports.add(new Port("RM Scheduler", "8030", "8030", "tcp"));
-        ports.add(new Port("RM IPC", "8050", "8050", "tcp"));
-        ports.add(new Port("Job History Server", "19888", "19888", "tcp"));
-        ports.add(new Port("HBase Master", "60010", "60010", "tcp"));
-        ports.add(new Port("Falcon", "15000", "15000", "tcp"));
-        ports.add(new Port("Storm", "8744", "8744", "tcp"));
-        ports.add(new Port("Oozie", "11000", "11000", "tcp"));
-        ports.add(new Port("HTTP", "80", "80", "tcp"));
+        ports.add(new Port("SSH", "22", "22", "tcp", aclRules));
+        ports.add(new Port("Ambari", "8080", "8080", "tcp", aclRules));
+        ports.add(new Port("Consul", "8500", "8500", "tcp", aclRules));
+        ports.add(new Port("NameNode", "50070", "50070", "tcp", aclRules));
+        ports.add(new Port("RM Web", "8088", "8088", "tcp", aclRules));
+        ports.add(new Port("RM Scheduler", "8030", "8030", "tcp", aclRules));
+        ports.add(new Port("RM IPC", "8050", "8050", "tcp", aclRules));
+        ports.add(new Port("Job History Server", "19888", "19888", "tcp", aclRules));
+        ports.add(new Port("HBase Master", "60010", "60010", "tcp", aclRules));
+        ports.add(new Port("Falcon", "15000", "15000", "tcp", aclRules));
+        ports.add(new Port("Storm", "8744", "8744", "tcp", aclRules));
+        ports.add(new Port("Oozie", "11000", "11000", "tcp", aclRules));
+        ports.add(new Port("HTTP", "80", "80", "tcp", aclRules));
         props.put(NAME, buildResources.get(0).getResourceName());
         props.put(DEPLOYMENTSLOT, PRODUCTION);
         props.put(LABEL, label);
@@ -148,6 +154,15 @@ public class AzureVirtualMachineResourceBuilder extends AzureSimpleInstanceResou
         props.put(VMTYPE, AzureVmType.valueOf(azureTemplate.getVmType()).vmType().replaceAll(" ", ""));
         return new AzureVirtualMachineCreateRequest(props,
                 azureStackUtil.createAzureClient(azureCredential), resources, buildResources, stack, instanceGroup.orNull());
+    }
+
+    private List<Rule> createACLRules(Stack stack) {
+        List<Rule> rules = new LinkedList<>();
+        for (Subnet net : stack.getAllowedSubNets()) {
+            rules.add(new Rule(Action.PERMIT.getText(), net.getSubnet()));
+        }
+        rules.add(DEFAULT_RULE);
+        return rules;
     }
 
     private String buildimageStoreUri(String commonName, String vmName) {
@@ -266,21 +281,46 @@ public class AzureVirtualMachineResourceBuilder extends AzureSimpleInstanceResou
         }
     }
 
-    public class Port {
+    private static class Port {
+        private final String localPort;
+        private final String name;
+        private final String port;
+        private final String protocol;
+        private final List<Rule> aclRules;
 
-        private String localPort;
-        private String name;
-        private String port;
-        private String protocol;
-
-        public Port() {
-        }
-
-        public Port(String name, String port, String localPort, String protocol) {
+        public Port(String name, String port, String localPort, String protocol, List<Rule> aclRules) {
             this.name = name;
             this.localPort = localPort;
             this.port = port;
             this.protocol = protocol;
+            this.aclRules = aclRules;
+        }
+    }
+
+    private static class Rule {
+        private final String action;
+        private final String remoteSubNet;
+        private final String description;
+
+        public Rule(String action, String remoteSubNet) {
+            this.action = action;
+            this.remoteSubNet = remoteSubNet;
+            this.description = "Added by Cloudbreak";
+        }
+    }
+
+    private enum Action {
+        PERMIT("permit"),
+        DENY("deny");
+
+        private final String text;
+
+        private Action(String value) {
+            this.text = value;
+        }
+
+        public String getText() {
+            return text;
         }
     }
 

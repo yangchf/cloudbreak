@@ -1,12 +1,9 @@
 package com.sequenceiq.cloudbreak.converter;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,8 +13,8 @@ import org.springframework.stereotype.Component;
 import com.amazonaws.regions.Regions;
 import com.sequenceiq.cloudbreak.controller.BadRequestException;
 import com.sequenceiq.cloudbreak.controller.json.ClusterResponse;
-import com.sequenceiq.cloudbreak.controller.json.StackJson;
 import com.sequenceiq.cloudbreak.controller.json.InstanceGroupJson;
+import com.sequenceiq.cloudbreak.controller.json.StackJson;
 import com.sequenceiq.cloudbreak.domain.Stack;
 import com.sequenceiq.cloudbreak.domain.Status;
 import com.sequenceiq.cloudbreak.repository.CredentialRepository;
@@ -27,7 +24,6 @@ import com.sequenceiq.cloudbreak.repository.TemplateRepository;
 public class StackConverter extends AbstractConverter<StackJson, Stack> {
 
     private static final int MIN_NODE_COUNT = 3;
-
 
     @Autowired
     private TemplateRepository templateRepository;
@@ -43,6 +39,9 @@ public class StackConverter extends AbstractConverter<StackJson, Stack> {
 
     @Autowired
     private MetaDataConverter metaDataConverter;
+
+    @Autowired
+    private SubnetConverter subnetConverter;
 
     @Value("${cb.aws.ami.map}")
     private String awsImage;
@@ -73,6 +72,7 @@ public class StackConverter extends AbstractConverter<StackJson, Stack> {
         stackJson.setPassword(entity.getPassword());
         stackJson.setHash(entity.getHash());
         stackJson.setRegion(entity.getRegion());
+        stackJson.setAllowedSubNets(new ArrayList<>(subnetConverter.convertAllEntityToJson(entity.getAllowedSubNets())));
         List<InstanceGroupJson> templateGroups = new ArrayList<>();
         templateGroups.addAll(instanceGroupConverter.convertAllEntityToJson(entity.getInstanceGroups()));
         stackJson.setInstanceGroups(templateGroups);
@@ -93,6 +93,7 @@ public class StackConverter extends AbstractConverter<StackJson, Stack> {
         stack.setPassword(json.getPassword());
         stack.setPublicInAccount(json.isPublicInAccount());
         stack.setRegion(json.getRegion());
+        stack.setAllowedSubNets(subnetConverter.convertAllJsonToEntity(json.getAllowedSubNets(), stack));
         try {
             stack.setCredential(credentialRepository.findOne(json.getCredentialId()));
         } catch (AccessDeniedException e) {
@@ -138,14 +139,6 @@ public class StackConverter extends AbstractConverter<StackJson, Stack> {
         Stack stack = convert(json);
         stack.setPublicInAccount(publicInAccount);
         return stack;
-    }
-
-    public Set<StackJson> convertAllEntityToJsonWithClause(Collection<Stack> entityList) {
-        Set<StackJson> stackJsons = new HashSet<>();
-        for (Stack stack : entityList) {
-            stackJsons.add(convert(stack));
-        }
-        return stackJsons;
     }
 
     public Map<String, Object> convertStackStatus(Stack stack) {
